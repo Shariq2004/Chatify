@@ -66,12 +66,34 @@ const SignupPage = () => {
             </p>
           </div>
 
-          <div className="flex flex-1 items-center justify-center py-4 sm:py-5 lg:py-0">
-            <img
-              src={ChatifyImg}
-              alt="Chatify illustration"
-              className="w-full max-w-75 object-contain sm:max-w-82.5 lg:max-w-125"
-            />
+          <div className="flex flex-1 items-center justify-center py-5 sm:py-6 lg:py-2">
+            <div className="relative w-full max-w-85 sm:max-w-107.5 lg:max-w-125">
+              <img
+                src={ChatifyImg}
+                alt="Chatify illustration"
+                className="relative z-10 mx-auto w-full object-contain"
+              />
+
+              <div className="absolute right-0 top-[10%] z-20 rounded-xl border border-[#E8EBF6] bg-white/95 px-3 py-2 shadow-[0_8px_25px_rgba(91,96,170,0.10)] backdrop-blur-sm sm:right-1 sm:px-3.5 sm:py-2.5 lg:right-0">
+                <p className="text-[10px] font-semibold text-[#172554] sm:text-[11px]">
+                  Stay Connected
+                </p>
+
+                <p className="mt-0.5 text-[8px] text-[#AAB0CC] sm:text-[9px]">
+                  Anytime, anywhere
+                </p>
+              </div>
+
+              <div className="absolute bottom-[8%] left-0 z-20 rounded-xl border border-[#E8EBF6] bg-white/95 px-3 py-2 shadow-[0_8px_25px_rgba(91,96,170,0.10)] backdrop-blur-sm sm:left-1 sm:px-3.5 sm:py-2.5 lg:left-0">
+                <p className="text-[10px] font-semibold text-[#172554] sm:text-[11px]">
+                  Simple & Fast
+                </p>
+
+                <p className="mt-0.5 text-[8px] text-[#AAB0CC] sm:text-[9px]">
+                  Made for conversations
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

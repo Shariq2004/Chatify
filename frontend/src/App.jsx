@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/"} />}/>
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to={"/"} />}/>
       </Routes>
-      <Toaster />
+      <Toaster position="top-right" />
     </div>
   );
 };

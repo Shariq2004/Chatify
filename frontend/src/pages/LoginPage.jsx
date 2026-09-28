@@ -1,11 +1,231 @@
-import React from 'react'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  MessageCircleMore,
+  LockKeyhole,
+  LoaderCircle,
+} from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
+import ChatifyImg from "../assets/chatify-auth.png";
 
 const LoginPage = () => {
-  return (
-    <div>
-      LoginPage
-    </div>
-  )
-}
+  const [showPassword, setShowPassword] = useState(false);
 
-export default LoginPage
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const { login, isloggingIn } = useAuthStore();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await login(formData);
+  };
+
+  return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-indigo-100/80 px-2 py-2 sm:px-6 sm:py-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-287 flex-col overflow-hidden rounded-[28px] border border-[#E8EBF6] bg-[#F8F9FF] shadow-[0_25px_70px_rgba(60,70,120,0.12)] lg:flex-row">
+        {/* LEFT SIDE */}
+        <div className="relative flex w-full flex-col overflow-hidden bg-white px-6 pb-4 pt-6 sm:px-10 sm:pt-7 lg:w-[55%] lg:px-10 lg:py-7">
+          <div className="relative flex flex-col items-center text-center">
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-[#7F84F7] shadow-md shadow-[#7F84F7]/20">
+                <MessageCircleMore
+                  size={25}
+                  strokeWidth={2.5}
+                  className="text-white"
+                />
+              </div>
+
+              <h1 className="text-[24px] font-bold tracking-tight text-[#172554]">
+                Chatify
+              </h1>
+            </div>
+
+            <h2 className="mt-3 text-[17px] font-medium text-[#7F84F7]">
+              Connect. Chat. Continue.
+            </h2>
+
+            <p className="mt-2 max-w-75 text-center text-[13px] leading-5 text-[#9AA2C4]">
+              Pick up where you left off and keep the conversation going.
+            </p>
+          </div>
+
+          <div className="flex flex-1 items-center justify-center py-5 sm:py-6 lg:py-2">
+            <div className="relative w-full max-w-85 sm:max-w-107.5 lg:max-w-125">
+              <img
+                src={ChatifyImg}
+                alt="Chatify illustration"
+                className="relative z-10 mx-auto w-full object-contain"
+              />
+
+              <div className="absolute right-0 top-[10%] z-20 rounded-xl border border-[#E8EBF6] bg-white/95 px-3 py-2 shadow-[0_8px_25px_rgba(91,96,170,0.10)] backdrop-blur-sm sm:right-1 sm:px-3.5 sm:py-2.5 lg:right-0">
+                <p className="text-[10px] font-semibold text-[#172554] sm:text-[11px]">
+                  Stay Connected
+                </p>
+
+                <p className="mt-0.5 text-[8px] text-[#AAB0CC] sm:text-[9px]">
+                  Anytime, anywhere
+                </p>
+              </div>
+
+              <div className="absolute bottom-[8%] left-0 z-20 rounded-xl border border-[#E8EBF6] bg-white/95 px-3 py-2 shadow-[0_8px_25px_rgba(91,96,170,0.10)] backdrop-blur-sm sm:left-1 sm:px-3.5 sm:py-2.5 lg:left-0">
+                <p className="text-[10px] font-semibold text-[#172554] sm:text-[11px]">
+                  Simple & Fast
+                </p>
+
+                <p className="mt-0.5 text-[8px] text-[#AAB0CC] sm:text-[9px]">
+                  Made for conversations
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="flex w-full items-center justify-center px-4 pb-5 pt-5 sm:px-8 sm:pb-6 lg:w-[45%] lg:px-5 lg:py-7">
+          <div className="w-full max-w-112.5 rounded-[22px] border border-[#EEF0F8] bg-white px-6 py-7 shadow-[0_15px_45px_rgba(91,96,170,0.10)] sm:px-8">
+            <div className="mb-5 flex justify-center">
+              <div className="flex h-13 w-13 items-center justify-center rounded-[15px] bg-[#7F84F7]/10 shadow-sm">
+                <LockKeyhole
+                  size={26}
+                  strokeWidth={2}
+                  className="text-[#7F84F7]"
+                />
+              </div>
+            </div>
+
+            <div className="mb-7 text-center">
+              <h2 className="text-[25px] font-bold tracking-tight text-[#172554]">
+                Welcome back to Chatify
+              </h2>
+
+              <p className="mx-auto mt-2 max-w-77.5 text-[13px] leading-5 text-[#9AA2C4]">
+                Sign in to continue your conversations and stay connected.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="mb-1.5 block text-[13px] sm:text-[14px] font-medium text-[#7F86AA]">
+                  Email Address
+                </label>
+
+                <div className="group relative">
+                  <Mail
+                    size={19}
+                    strokeWidth={1.8}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#AAB0CC] transition-colors duration-200 group-focus-within:text-[#7F84F7] group-has-[input:valid]:text-[#7F84F7]"
+                  />
+
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="alishshaikh@example.com"
+                    required
+                    className="h-11.25 w-full rounded-xl border border-[#E8EBF6] bg-[#F8F9FF] pl-11 pr-4 text-[14px] text-slate-800 outline-none placeholder:text-[#C4C9DD] transition-all duration-200 hover:border-[#D5D8F3] focus:border-[#7F84F7] focus:bg-white focus:ring-2 focus:ring-[#7F84F7]/10 valid:bg-white valid:border-[#7F84F7]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-[13px] sm:text-[14px] font-medium text-[#7F86AA]">
+                  Password
+                </label>
+
+                <div className="group relative">
+                  <Lock
+                    size={19}
+                    strokeWidth={1.8}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#AAB0CC] transition-colors duration-200 group-focus-within:text-[#7F84F7] group-has-[input:valid]:text-[#7F84F7]"
+                  />
+
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Password"
+                    required
+                    className="h-11.25 w-full rounded-xl border border-[#E8EBF6] bg-[#F8F9FF] pl-11 pr-11 text-[14px] text-slate-800 outline-none placeholder:text-[#C4C9DD] transition-all duration-200 hover:border-[#D5D8F3] focus:border-[#7F84F7] focus:bg-white focus:ring-2 focus:ring-[#7F84F7]/10 valid:bg-white valid:border-[#7F84F7]"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-[#AAB0CC] transition-colors duration-200 hover:text-[#7F84F7]"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={18} strokeWidth={1.8} />
+                    ) : (
+                      <Eye size={18} strokeWidth={1.8} />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isloggingIn}
+                className="group mt-5 flex h-11.25 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#7F84F7] via-[#8589F3] to-[#A18AFB] text-[15px] font-semibold text-white shadow-md shadow-[#7F84F7]/20 transition-all duration-200 hover:-translate-y-px hover:bg-[#7076E8] hover:shadow-lg hover:shadow-[#7F84F7]/25 active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isloggingIn ? (
+                  <>
+                    <LoaderCircle
+                      size={18}
+                      strokeWidth={2.2}
+                      className="animate-spin"
+                    />
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight
+                      size={18}
+                      strokeWidth={2.2}
+                      className="transition-transform duration-200 group-hover:translate-x-1"
+                    />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-4 flex justify-center">
+              <p className="text-[11px] font-medium text-[#7F84F7] hover:text-[#5F65D8] hover:underline cursor-pointer">
+                Forgot password?
+              </p>
+            </div>
+
+            <p className="mt-4 text-center text-[12px] text-[#AAB0CC]">
+              Don't have an account{" "}
+              <Link
+                to="/signup"
+                className="font-semibold text-[#7F84F7] transition-colors duration-200 hover:text-[#5F65D8] hover:underline"
+              >
+                Sign Up
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginPage;
