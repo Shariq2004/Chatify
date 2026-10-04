@@ -2,7 +2,7 @@ import { MessageCircleMore, UsersRound } from "lucide-react";
 
 const ChatEmptyState = ({ onViewContacts }) => {
   return (
-    <div className="flex flex-1 items-center justify-center px-6">
+    <div className="flex flex-1 items-center justify-center px-6 min-h-screen border-r border-[#E6E8F2] bg-[#FAFBFF]">
       <div className="flex max-w-sm flex-col items-center text-center">
         <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#7F84F7]/10">
           <MessageCircleMore

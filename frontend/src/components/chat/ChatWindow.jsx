@@ -2,7 +2,7 @@ import { react, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import ProfilePanel from "../profile/ProfilePanel";
+import SelectedUserProfilePanel from "../profile/SelectedUserProfilePanel";
 
 
 const ChatWindow = () => {
@@ -17,7 +17,7 @@ const ChatWindow = () => {
         <MessageInput />
       </div>
 
-      <ProfilePanel/>
+      <SelectedUserProfilePanel/>
     </div>
   );
 };

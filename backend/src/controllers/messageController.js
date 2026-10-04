@@ -19,6 +19,17 @@ export const getMessagesByUserId = async (req, res) => {
     const myId = req.user._id;
     const { id: userToChatId } = req.params;
 
+    await Message.updateMany(
+      {
+        senderId: userToChatId,
+        receiverId: myId,
+        isRead: false,
+      },
+      {
+        $set: { isRead: true },
+      }
+    );
+
     const messages = await Message.find({
       $or: [
         { senderId: myId, receiverId: userToChatId },
