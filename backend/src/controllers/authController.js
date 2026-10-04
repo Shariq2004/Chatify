@@ -42,6 +42,11 @@ export const signup = async (req, res) => {
       fullName: newUser.fullName,
       email: newUser.email,
       profilePic: newUser.profilePic,
+      phoneNumber: newUser.phoneNumber,
+      bio: newUser.bio,
+      status: newUser.status,
+      isOnline: newUser.isOnline,
+      lastSeen: newUser.lastSeen,
     });
   } catch (error) {
     console.log("Error in signUp controller", error);
@@ -73,6 +78,11 @@ export const login = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
       profilePic: user.profilePic,
+      phoneNumber: user.phoneNumber,
+      bio: user.bio,
+      status: user.status,
+      isOnline: user.isOnline,
+      lastSeen: user.lastSeen,
     });
   } catch (error) {
     console.log("Error in login controller", error);
@@ -87,26 +97,34 @@ export const logout = (_, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-  
-    if (!req.file) {
-      return res.status(400).json({ message: "Profile pic is required" });
+    const userId = req.user._id;
+
+    const { fullName, phoneNumber, bio, status } = req.body;
+
+    const updateData = {};
+
+    if (fullName !== undefined) updateData.fullName = fullName;
+    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+    if (bio !== undefined) updateData.bio = bio;
+    if (status !== undefined) updateData.status = status;
+
+    if (req.file) {
+      const uploadImage = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "image",
+        folder: "chatify-profile-img",
+      });
+
+      updateData.profilePic = uploadImage.secure_url;
+
+      fs.unlinkSync(req.file.path);
     }
 
-    const userId = req.user._id;
-    const profilePic = req.file.path
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      returnDocument: "after",
+      runValidators: true,
+    }).select("-password");
 
-    const uploadImage = await cloudinary.uploader.upload(profilePic);
-
-    fs.unlinkSync(req.file.path);
-
-    const updateUser = await User.findByIdAndUpdate(
-      userId,
-      { profilePic: uploadImage.secure_url },
-      { new: true },
-    ).select("-password");
-
-    res.status(200).json(updateUser);
-
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in update profile", error);
     res.status(500).json({ message: "Internal server error" });

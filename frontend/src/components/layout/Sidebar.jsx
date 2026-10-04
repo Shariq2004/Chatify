@@ -160,6 +160,7 @@ const Sidebar = () => {
         {/* User Profile button */}
         <button
           type="button"
+          onClick={() => setIsActiveTab("Profile")}
           className={`flex h-14.5 w-full items-center rounded-xl hover:bg-slate-50 cursor-pointer ${
             isSidebarOpen ? "gap-3 px-2" : "justify-center"
           }`}

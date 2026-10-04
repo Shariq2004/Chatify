@@ -1,137 +1,265 @@
+import {
+  Mail,
+  Phone,
+  UserRound,
+  FileText,
+  Camera,
+  Check,
+  Pencil,
+  LoaderCircle,
+} from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
+import ProfileAvatar from "../common/ProfileAvatar";
 import { useState } from "react";
-import { ChevronRight, Mail, Phone } from "lucide-react";
-import { useChatStore } from "../../store/useChatStore";
-import UserAvatar from "../common/UserAvatar";
 
 const ProfilePanel = () => {
-  const { isProfileOpen, toggleProfile } = useChatStore();
+  const { authUser, updateProfile, isUpdatingProfile } = useAuthStore();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedImg, setSelectedImg] = useState(null);
+
+  const [formData, setFormData] = useState({
+    fullName: authUser?.fullName || "",
+    phoneNumber: authUser?.phoneNumber || "",
+    bio: authUser?.bio || "",
+    status: authUser?.status || "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImg({
+      file,
+      url: imageUrl,
+    });
+  };
+
+  const handleEdit = () => {
+    setFormData({
+      fullName: authUser?.fullName || "",
+      phoneNumber: authUser?.phoneNumber || "",
+      bio: authUser?.bio || "",
+      status: authUser?.status || "",
+    });
+
+    setIsEditing(true);
+  };
+
+  const handleSave = async () => {
+    const data = new FormData();
+
+    data.append("fullName", formData.fullName);
+    data.append("phoneNumber", formData.phoneNumber);
+    data.append("bio", formData.bio);
+    data.append("status", formData.status);
+
+    if (selectedImg?.file) {
+      data.append("profilePic", selectedImg.file);
+    }
+
+    await updateProfile(data);
+
+    setSelectedImg(null);
+    setIsEditing(false);
+  };
 
   return (
-    <aside
-      className={`flex h-full shrink-0 flex-col overflow-hidden border-l border-[#E7E9F2] bg-white transition-[width] duration-300 ease-in-out ${
-        isProfileOpen ? "w-85" : "w-0"
-      }`}
-    >
-      <div className="flex h-19 shrink-0 items-center border-b border-[#E7E9F2] px-5">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={toggleProfile}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-[#8D91A3] transition-all duration-200 hover:bg-[#F3F4FA] hover:text-[#7F84F7] cursor-pointer"
-          >
-            <ChevronRight size={20} strokeWidth={2} />
-          </button>
-
-          <h2 className="text-[15px] font-semibold text-[#3F4354]">
-            Profile Info
+    <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
+      <div className="h-19 flex items-center justify-between px-5">
+        <div>
+          <h2 className="text-xl font-semibold tracking-[-0.01em] text-[#3F4354]">
+            My Profile
           </h2>
+
+          <p className="mt-0.5 text-xs text-slate-400">
+            Manage your personal information
+          </p>
         </div>
       </div>
 
-      <div className="chatify-scrollbar min-h-0 flex-1 overflow-y-auto">
-        <div className="flex flex-col items-center px-6 pb-6 pt-7">
-           <UserAvatar
-            src="/avatar.png"
-            name="Sarah Wilson"
-            size="h-25"
-          />
+      <div className="chatuser-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-6">
+        <div className="flex flex-col items-center">
+          <div className="relative">
+            <ProfileAvatar
+              src={selectedImg?.url || authUser?.profilePic}
+              size="h-24 w-24"
+            />
 
-          <h3 className="mt-4 text-[18px] font-semibold tracking-tight text-[#3F4354]">
-            Alex Johnson
+            {isEditing && (
+              <>
+                <input
+                  type="file"
+                  id="profile-image"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+
+                <label
+                  htmlFor="profile-image"
+                  className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-[3px] border-[#FAFBFF] bg-[#7F84F7] text-white shadow-sm transition-colors duration-200 hover:bg-[#7076E8]"
+                >
+                  <Camera size={14} strokeWidth={2} />
+                </label>
+              </>
+            )}
+          </div>
+
+          <h3 className="mt-4 max-w-full truncate px-2 text-[17px] font-semibold text-[#3F4354]">
+            {authUser?.fullName || "Your Name"}
           </h3>
 
           <div className="mt-1.5 flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#55C58A]" />
-            <span className="text-[12px] font-medium text-[#8D91A3]">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+
+            <span className="text-[11px] font-medium text-emerald-500">
               Online
             </span>
           </div>
-
-          <p className="mt-4 max-w-65 text-center text-[13px] leading-5 text-[#8D91A3]">
-            Building something cool. Always open to a good conversation.
-          </p>
         </div>
 
-        <div className="px-5">
-          <div className="h-px bg-[#EEF0F5]" />
+        <div className="mt-8 space-y-5">
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-[#737891]">
+              <UserRound size={14} />
+              Full Name
+            </label>
+
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              readOnly={!isEditing}
+              className={`h-11 w-full rounded-xl border px-3.5 text-[13px] text-[#3F4354] outline-none transition-all duration-200 ${
+                isEditing
+                  ? "border-[#d7dbed] bg-white focus:border-[#7F84F7]"
+                  : "cursor-default border-transparent bg-[#F1F3F9]"
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-[#737891]">
+              <Mail size={14} />
+              Email
+            </label>
+
+            <input
+              type="email"
+              value={authUser?.email || ""}
+              readOnly
+              className="h-11 w-full cursor-default rounded-xl border border-transparent bg-[#F1F3F9] px-3.5 text-[13px] text-[#3F4354] outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-[#737891]">
+              <Phone size={14} />
+              Phone
+            </label>
+
+            <input
+              type="tel"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleInputChange}
+              readOnly={!isEditing}
+              placeholder="Add phone number"
+              className={`h-11 w-full rounded-xl border px-3.5 text-[13px] text-[#3F4354] outline-none placeholder:text-[#B0B4C5] transition-all duration-200 ${
+                isEditing
+                  ? "border-[#d7dbed] bg-white focus:border-[#7F84F7]"
+                  : "cursor-default border-transparent bg-[#F1F3F9]"
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-[#737891]">
+              <FileText size={14} />
+              About
+            </label>
+
+            <textarea
+              name="bio"
+              rows={4}
+              value={formData.bio}
+              onChange={handleInputChange}
+              readOnly={!isEditing}
+              placeholder="Write something about yourself..."
+              className={`w-full resize-none rounded-xl border px-3.5 py-3 text-[13px] leading-5 text-[#3F4354] outline-none placeholder:text-[#B0B4C5] transition-all duration-200 ${
+                isEditing
+                  ? "border-[#d7dbed] bg-white focus:border-[#7F84F7]"
+                  : "cursor-default border-transparent bg-[#F1F3F9]"
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-[#737891]">
+              <Check size={14} />
+              Status
+            </label>
+
+            <input
+              type="text"
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              readOnly={!isEditing}
+              placeholder="Hey there! I am using Chatify."
+              className={`h-11 w-full rounded-xl border px-3.5 text-[13px] text-[#3F4354] outline-none placeholder:text-[#B0B4C5] transition-all duration-200 ${
+                isEditing
+                  ? "border-[#d7dbed] bg-white focus:border-[#7F84F7]"
+                  : "cursor-default border-transparent bg-[#F1F3F9]"
+              }`}
+            />
+          </div>
         </div>
 
-        <section className="px-5 py-5">
-          <h4 className="mb-4 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#9AA0B5]">
-            Contact Info
-          </h4>
-
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-[#F2F3FF] text-[#7F84F7]">
-                <Mail size={17} strokeWidth={2} />
-              </div>
-
-              <div className="min-w-0">
-                <p className="text-[11px] text-[#9AA0B5]">Email</p>
-                <p className="truncate text-[13px] font-medium text-[#4A4E5E]">
-                  alex@example.com
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-[#F2F3FF] text-[#7F84F7]">
-                <Phone size={17} strokeWidth={2} />
-              </div>
-
-              <div className="min-w-0">
-                <p className="text-[11px] text-[#9AA0B5]">Phone</p>
-                <p className="text-[13px] font-medium text-[#4A4E5E]">
-                  +91 98765 43210
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div className="px-5">
-          <div className="h-px bg-[#EEF0F5]" />
-        </div>
-
-        <section className="px-5 py-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h4 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#9AA0B5]">
-              Shared Media
-            </h4>
-
-            <button className="text-[12px] font-medium text-[#7F84F7] transition hover:text-[#686DE8]">
-              See all
-            </button>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2">
-            <div className="aspect-square overflow-hidden rounded-[10px] bg-[#F3F4FA]">
-              <img
-                src="https://plus.unsplash.com/premium_photo-1694819488591-a43907d1c5cc?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGRvZ3N8ZW58MHx8MHx8fDA%3D"
-                alt=""
-                className="h-full w-full object-cover transition duration-300 hover:scale-105"
-              />
-            </div>
-
-            <div className="aspect-square overflow-hidden rounded-[10px] bg-[#F3F4FA]">
-              <img
-                src="https://media.istockphoto.com/id/1361217779/photo/portrait-of-happy-teenage-boy-at-park.jpg?s=612x612&w=0&k=20&c=yGHZLPu6UWwoj2wazbbepxmjl29MS1Hr2jV3N0FzjyI="
-                alt=""
-                className="h-full w-full object-cover transition duration-300 hover:scale-105"
-              />
-            </div>
-
-            <div className="aspect-square overflow-hidden rounded-[10px] bg-[#F3F4FA]">
-              <img
-                src="https://www.health.com/thmb/G_mz7T-jCGFGYm8PyKlwjWT3pJs=/2119x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1498826563-db5d95e08d294ae6bc3860f901ee0c40.jpg"
-                alt=""
-                className="h-full w-full object-cover transition duration-300 hover:scale-105"
-              />
-            </div>
-          </div>
-        </section>
+        {!isEditing ? (
+          <button
+            type="button"
+            onClick={handleEdit}
+            className="mt-6 flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#7F84F7] text-[13px] font-semibold text-white shadow-sm shadow-[#7F84F7]/20 transition-colors duration-200 hover:bg-[#7076E8] active:scale-[0.98]"
+          >
+            <Pencil size={15} strokeWidth={2.2} />
+            Edit Profile
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={isUpdatingProfile}
+            className="mt-6 flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#7F84F7] text-[13px] font-semibold text-white shadow-sm shadow-[#7F84F7]/20 transition-colors duration-200 hover:bg-[#7076E8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {isUpdatingProfile ? (
+              <>
+                <LoaderCircle size={16} className="animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Check size={16} strokeWidth={2.3} />
+                Save Changes
+              </>
+            )}
+          </button>
+        )}
       </div>
-    </aside>
+    </section>
   );
 };
 

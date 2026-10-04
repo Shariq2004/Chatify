@@ -37,7 +37,7 @@ const NotificationList = () => {
   ];
 
   return (
-    <section className="flex h-full w-100 shrink-0 flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
+    <section className="flex h-full  flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
       <div className="flex h-19 shrink-0 items-center justify-between px-5">
         <div>
           <h2 className="text-xl font-semibold tracking-tight text-slate-800">

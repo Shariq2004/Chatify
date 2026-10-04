@@ -5,15 +5,16 @@ const ChatItem = ({
   message,
   time,
   avatar,
-  online,
   unread,
-  isActive,
+  click,
+  selectedUser
 }) => {
   return (
     <button
       type="button"
+      onClick={click}
       className={`group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all duration-200 cursor-pointer ${
-        isActive
+        selectedUser
           ? "bg-[#F0F1FF]/60"
           : "hover:bg-[#F0F1FF]/40"
       }`}
@@ -25,9 +26,9 @@ const ChatItem = ({
           size="h-11 w-11"
         />
 
-        {online && (
+        {/* {online && ( */}
           <span className="absolute top-0.5 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
-        )}
+        {/* )} */}
       </div>
 
       <div className="min-w-0 flex-1">

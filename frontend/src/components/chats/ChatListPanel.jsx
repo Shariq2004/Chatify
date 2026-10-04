@@ -1,99 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Plus, Volume2, VolumeX, X } from "lucide-react";
 import ChatFilters from "./ChatFilters";
 import ChatItem from "./ChatItem";
-import ChatEmptyState from "./ChatEmptyState";
+import NoChatsFound from "./NoChatsFound";
 import { useChatStore } from "../../store/useChatStore";
 
+
+const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
+
+
 const ChatListPanel = () => {
-  const { isSoundEnabled, toggleSound, setIsActiveTab } = useChatStore();
+  const { isSoundEnabled, toggleSound, setIsActiveTab, isUsersLoading,selectedUser, setSelectedUser, getMyChats } = useChatStore();
   const [search, setSearch] = useState("");
+
+
+  // useEffect(() => {
+  //  getMyChats();
+  // },[getMyChats])
+
+  // if(isUsersLoading) return <div>Loading..</div>
+    //  if(chats.length === 0) return <NoChatsFound onViewContacts={() => setIsActiveTab("Contacts")} /> 
+
   const chats = [
-    {
-      id: 1,
-      name: "Sarah Wilson",
-      message: "Hey, are you free today?",
-      time: "10:42 AM",
-      avatar: "",
-      online: true,
-      unread: 2,
-    },
-    {
-      id: 2,
-      name: "Alex Johnson",
-      message: "Sure, see you tomorrow!",
-      time: "9:18 AM",
-      avatar: "",
-      online: true,
-      unread: 0,
-    },
-    {
-      id: 3,
-      name: "Emily Davis",
-      message: "That sounds great 😊",
-      time: "Yesterday",
-      avatar: "",
-      online: false,
-      unread: 0,
-    },
-    {
-      id: 4,
-      name: "Michael Brown",
-      message: "Can you send me the file?",
-      time: "Yesterday",
-      avatar: "",
-      online: false,
-      unread: 3,
-    },
-    {
-      id: 5,
-      name: "Design Team",
-      message: "Sarah: The new design is ready.",
-      time: "Mon",
-      avatar: "",
-      online: true,
-      unread: 0,
-    },
-    {
-      id: 6,
-      name: "Design Team",
-      message: "Sarah: The new design is ready.",
-      time: "Mon",
-      avatar: "",
-      online: true,
-      unread: 0,
-    },
-    {
-      id: 7,
-      name: "Design Team",
-      message: "Sarah: The new design is ready.",
-      time: "Mon",
-      avatar: "",
-      online: true,
-      unread: 0,
-    },
-    {
-      id: 8,
-      name: "Design Team",
-      message: "Sarah: The new design is ready.",
-      time: "Mon",
-      avatar: "",
-      online: true,
-      unread: 0,
-    },
-    {
-      id: 9,
-      name: "Design Team",
-      message: "Sarah: The new design is ready.",
-      time: "Mon",
-      avatar: "",
-      online: true,
-      unread: 0,
-    },
-  ];
+  {
+    id: 1,
+    fullName: "Aarav Sharma",
+    text: "Hey, are you free for a quick chat?",
+    createdAt: "10:21 PM",
+    profilePic: "",
+    unread: 2,
+  },
+  {
+    id: 2,
+    fullName: "Priya Verma",
+    text: "The project files are ready.",
+    createdAt: "9:45 PM",
+    profilePic: "",
+    unread: 0,
+  },
+  {
+    id: 3,
+    fullName: "Rahul Singh",
+    text: "Let's discuss this tomorrow.",
+    createdAt: "Yesterday",
+    profilePic: "",
+    unread: 5,
+  },
+  {
+    id: 4,
+    fullName: "Ananya Gupta",
+    text: "Thanks for your help!",
+    createdAt: "Yesterday",
+    profilePic: "",
+    unread: 1,
+  },
+  {
+    id: 5,
+    fullName: "Vikash Kumar",
+    text: "Can you send me the latest update?",
+    createdAt: "Yesterday",
+    profilePic: "",
+    unread: 0,
+  },
+];
 
   return (
-    <section className="flex h-full w-100 shrink-0 flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
+    <section className="flex h-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
       <div className="flex h-19 shrink-0 items-center justify-between px-5">
         <h2 className="text-xl font-semibold tracking-tight text-slate-800">
           Chats
@@ -102,7 +74,12 @@ const ChatListPanel = () => {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={toggleSound}
+             onClick={() => {
+              // play click sound before toggling
+              mouseClickSound.currentTime = 0; // reset to start
+              mouseClickSound.play().catch((error) => console.log("Audio play failed:", error));
+              toggleSound();
+            }}
             className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-all duration-200 ${
               isSoundEnabled
                 ? "text-[#7F84F7] hover:bg-[#7F84F7]/10 hover:text-[#7076E8]"
@@ -163,26 +140,22 @@ const ChatListPanel = () => {
       )}
 
       {/* Chat List */}
-      {chats.length === 0 ? (
-        <ChatEmptyState onViewContacts={() => setIsActiveTab("Contacts")} />
-      ) : (
         <div className="chatuser-scrollbar h-full overflow-y-auto px-2 pb-3">
           <div className="flex flex-col gap-1">
             {chats.map((chat, index) => (
               <ChatItem
                 key={chat.id}
-                name={chat.name}
-                message={chat.message}
-                time={chat.time}
-                avatar={chat.avatar}
-                online={chat.online}
+                name={chat.fullName}
+                message={chat.text}
+                time={chat.createdAt}
+                avatar={chat.profilePic}
                 unread={chat.unread}
-                isActive={index === 0}
+                click={() => setSelectedUser(chat)}
+                selectedUser={selectedUser}
               />
             ))}
           </div>
         </div>
-      )}
     </section>
   );
 };
