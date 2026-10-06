@@ -1,103 +1,23 @@
-import React from "react";
 import { Check, MoreHorizontal } from "lucide-react";
+import { useChatStore } from "../../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
-const messages = [
-  {
-    id: 1,
-    type: "received",
-    text: "Hey! How are you?",
-    timestamp: "2026-10-01T21:41:00",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 2,
-    type: "received",
-    text: "Are you working on Chatify?",
-    timestamp: "2026-10-01T21:41:25",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 3,
-    type: "received",
-    text: "The UI is looking really clean!",
-    timestamp: "2026-10-01T21:41:48",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 4,
-    type: "sent",
-    text: "Yes! Almost done with the chat UI 🚀",
-    timestamp: "2026-10-01T21:42:10",
-    seen: true,
-  },
-  {
-    id: 5,
-    type: "sent",
-    text: "I'm trying to keep it modern and simple.",
-    timestamp: "2026-10-01T21:42:35",
-    seen: true,
-  },
-  {
-    id: 6,
-    type: "sent",
-    text: "Just working on the message section now.",
-    timestamp: "2026-10-01T21:42:55",
-    seen: false,
-  },
-  {
-    id: 7,
-    type: "received",
-    text: "That's awesome! Keep going 🚀",
-    timestamp: "2026-10-01T21:44:20",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 8,
-    type: "received",
-    text: "I really like the purple theme.",
-    timestamp: "2026-10-01T21:44:45",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 9,
-    type: "sent",
-    text: "Thanks! I wanted something clean and modern yes is chdf sdjhf shsjf fdjfjdfhd fdjjf fdnfjdfj fndjsjds dnsjndj.",
-    timestamp: "2026-10-01T21:46:10",
-    seen: true,
-  },
-  {
-    id: 10,
-    type: "received",
-    text: "It definitely looks modern.",
-    timestamp: "2026-10-01T21:48:00",
-    avatar: "/avatar.png",
-  },
-   {
-    id: 11,
-    type: "received",
-    text: "Hey! How are you?",
-    timestamp: "2026-10-01T21:50:10",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 12,
-    type: "received",
-    text: "Are you working on Chatify?",
-    timestamp: "2026-10-01T21:50:35",
-    avatar: "/avatar.png",
-  },
-];
-
-const isWithinOneMinute = (previousMessage, currentMessage) => {
+const isWithinOneMinute = (previousMessage, currentMessage, authUserId) => {
   if (!previousMessage || !currentMessage) {
     return false;
   }
 
-  const previousTime = new Date(previousMessage.timestamp).getTime();
-  const currentTime = new Date(currentMessage.timestamp).getTime();
+  const previousTime = new Date(previousMessage.createdAt).getTime();
+  const currentTime = new Date(currentMessage.createdAt).getTime();
+
+  const previousType =
+    previousMessage.senderId === authUserId ? "sent" : "received";
+
+  const currentType =
+    currentMessage.senderId === authUserId ? "sent" : "received";
 
   return (
-    previousMessage.type === currentMessage.type &&
+    previousType === currentType &&
     currentTime - previousTime <= 60 * 1000
   );
 };
@@ -110,6 +30,10 @@ const formatTime = (timestamp) => {
 };
 
 const MessageList = () => {
+  const { messages,selectedUser } = useChatStore();
+  const { authUser } = useAuthStore();
+
+
   return (
     <div className="chatify-scrollbar min-h-0 flex-1 overflow-y-auto bg-[#F3F4FA] px-5 py-4">
       <div className="flex w-full flex-col">
@@ -123,16 +47,18 @@ const MessageList = () => {
           const previousMessage = messages[index - 1];
           const nextMessage = messages[index + 1];
 
-          const isSent = message.type === "sent";
+          const isSent = message.senderId === authUser?._id;
 
           const isSameGroupAsPrevious = isWithinOneMinute(
             previousMessage,
-            message
+            message,
+            authUser?._id
           );
 
           const isSameGroupAsNext = isWithinOneMinute(
             message,
-            nextMessage
+            nextMessage,
+            authUser?._id
           );
 
           const isFirstInGroup = !isSameGroupAsPrevious;
@@ -140,7 +66,7 @@ const MessageList = () => {
 
           return (
             <div
-              key={message.id}
+              key={message._id}
               className={`group flex items-end gap-2 ${
                 isSent ? "justify-end" : "justify-start"
               } ${isFirstInGroup ? "mt-4 first:mt-0" : "mt-1"}`}
@@ -149,7 +75,7 @@ const MessageList = () => {
                 <div className="w-8 shrink-0">
                   {isFirstInGroup && (
                     <img
-                      src={message.avatar}
+                      src={message.senderId?.profilePic || "/avatar.png"}
                       alt=""
                       className="mb-1 h-8 w-8 rounded-full object-cover"
                     />
@@ -164,7 +90,10 @@ const MessageList = () => {
               >
                 <div className="flex min-w-0 items-center gap-1.5">
                   {isSent && (
-                    <button className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#9AA0B5] opacity-0 shadow-sm transition-all duration-200 hover:text-[#7F84F7] group-hover:opacity-100 cursor-pointer">
+                    <button
+                      type="button"
+                      className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-[#9AA0B5] opacity-0 shadow-sm transition-all duration-200 hover:text-[#7F84F7] group-hover:opacity-100"
+                    >
                       <MoreHorizontal size={16} />
                     </button>
                   )}
@@ -196,7 +125,10 @@ const MessageList = () => {
                   </div>
 
                   {!isSent && (
-                    <button className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#9AA0B5] opacity-0 shadow-sm transition-all duration-200 hover:text-[#7F84F7] group-hover:opacity-100 cursor-pointer">
+                    <button
+                      type="button"
+                      className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-[#9AA0B5] opacity-0 shadow-sm transition-all duration-200 hover:text-[#7F84F7] group-hover:opacity-100"
+                    >
                       <MoreHorizontal size={16} />
                     </button>
                   )}
@@ -208,7 +140,7 @@ const MessageList = () => {
                       isSent ? "justify-end" : "justify-start"
                     }`}
                   >
-                    <span>{formatTime(message.timestamp)}</span>
+                    <span>{formatTime(message.createdAt)}</span>
 
                     {isSent && (
                       <span className="relative flex h-4 w-5 items-center">
@@ -216,7 +148,7 @@ const MessageList = () => {
                           size={13}
                           strokeWidth={2.2}
                           className={`absolute left-0 ${
-                            message.seen
+                            message.isRead
                               ? "text-[#5559B8]"
                               : "text-[#B7BAE8]"
                           }`}
@@ -226,7 +158,7 @@ const MessageList = () => {
                           size={13}
                           strokeWidth={2.2}
                           className={`absolute left-1.25 ${
-                            message.seen
+                            message.isRead
                               ? "text-[#5559B8]"
                               : "text-[#B7BAE8]"
                           }`}
@@ -245,4 +177,3 @@ const MessageList = () => {
 };
 
 export default MessageList;
-

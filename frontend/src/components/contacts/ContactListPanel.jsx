@@ -1,60 +1,23 @@
-import { useState } from "react";
-import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import ContactItem from "./ContactItem";
+import ChatItemSkeleton from "../chats/ChatItemSkeleton";
+import { useChatStore } from "../../store/useChatStore";
+import SearchInput from "../common/SearchInput";
 
 const ContactListPanel = () => {
+  const { isUsersLoading, allContacts, getAllContacts,selectedUser, setSelectedUser } = useChatStore();
+
   const [search, setSearch] = useState("");
 
-  const contacts = [
-    {
-      id: 1,
-      name: "Sarah Wilson",
-      avatar: "",
-      online: true,
-    },
-    {
-      id: 2,
-      name: "Alex Johnson",
-      avatar: "",
-      online: true,
-    },
-    {
-      id: 3,
-      name: "Emily Davis",
-      avatar: "",
-      online: false,
-    },
-    {
-      id: 4,
-      name: "Emily Davis",
-      avatar: "",
-      online: false,
-    },
-    {
-      id: 5,
-      name: "Emily Davis",
-      avatar: "",
-      online: false,
-    },
-    {
-      id: 6,
-      name: "Emily Davis",
-      avatar: "",
-      online: false,
-    },
-    {
-      id: 7,
-      name: "Emily Davis",
-      avatar: "",
-      online: false,
-    },
-    {
-      id: 8,
-      name: "Emily Davis",
-      avatar: "",
-      online: false,
-    },
-  ];
+  useEffect(() => {
+    getAllContacts();
+  }, [getAllContacts]);
+
+  const filteredContacts = allContacts.filter((contact) =>
+    contact.fullName?.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const onlineCount = allContacts.filter((contact) => contact.isOnline).length;
 
   return (
     <section className="flex h-full shrink-0 flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
@@ -64,39 +27,48 @@ const ContactListPanel = () => {
             Contacts
           </h2>
 
-          <p className="mt-0.5 text-xs text-slate-400">24 contacts</p>
+          <p className="mt-0.5 text-xs text-slate-400">
+            {allContacts.length} contacts
+          </p>
         </div>
 
         <span className="rounded-full bg-[#7F84F7]/10 px-2.5 py-1 text-xs font-medium text-[#7F84F7]">
-          8 online
+          {onlineCount} online
         </span>
       </div>
 
-      <div className="shrink-0 px-4">
-        <div className="flex h-10 items-center gap-3 rounded-full border border-slate-200/80 bg-[#7F84F7]/5 px-3">
-          <Search size={18} className="text-slate-400" />
+      <SearchInput
+        search={search}
+        setSearch={setSearch}
+        placeholder="Search contacts..."
+      />
 
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search contacts..."
-            className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
-          />
-        </div>
-      </div>
-
-      <div className="chatuser-scrollbar min-h-0 flex-1 overflow-y-auto px-2 py-3">
-        <div className="flex flex-col gap-1">
-          {contacts.map((contact) => (
-            <ContactItem
-              key={contact.id}
-              name={contact.name}
-              avatar={contact.avatar}
-              online={contact.online}
-            />
-          ))}
-        </div>
+      <div className="chatuser-scrollbar flex-1 overflow-y-auto px-2 py-3">
+        {isUsersLoading ? (
+          <div className="flex flex-col gap-1">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ChatItemSkeleton key={index} />
+            ))}
+          </div>
+        ) : filteredContacts.length > 0 ? (
+          <div className="flex flex-col gap-1">
+            {filteredContacts.map((contact) => (
+              <ContactItem
+                key={contact._id}
+                id={contact._id}
+                name={contact.fullName}
+                avatar={contact.profilePic}
+                online={contact.isOnline}
+                click={() => setSelectedUser(contact)}
+                selectedUser={selectedUser}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex h-full items-center justify-center px-4 text-center text-base text-slate-400">
+            No contacts found
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,17 +1,25 @@
 import { MessageCircle } from "lucide-react";
 import UserAvatar from "../common/UserAvatar";
 
-const ContactItem = ({ name, avatar, online }) => {
+const ContactItem = ({id, name, avatar, online,selectedUser,click }) => {
+
   return (
     <button
       type="button"
-      className="group flex w-full cursor-pointer items-center gap-3 rounded-2xl px-3 py-3 text-left transition-all duration-200 hover:bg-[#7F84F7]/6"
+      onClick={click}
+      className={`group flex w-full cursor-pointer items-center gap-3 rounded-2xl px-3 py-3 text-left transition-all duration-200
+         ${
+          selectedUser?._id === id
+          ? "bg-[#7F84F7]/6"
+          : "hover:bg-[#F0F1FF]/60"
+         }
+         `}
     >
       <div className="relative shrink-0">
         <UserAvatar
           src={avatar}
           name={name}
-          size="h-11 w-11"
+          size="h-13 w-13"
         />
 
         {online && (
