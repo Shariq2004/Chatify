@@ -1,11 +1,13 @@
 import UserAvatar from "../common/UserAvatar";
 
 const ChatItem = ({
+  id,
   name,
   message,
   time,
   avatar,
   unread,
+  online,
   click,
   selectedUser
 }) => {
@@ -14,7 +16,7 @@ const ChatItem = ({
       type="button"
       onClick={click}
       className={`group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all duration-200 cursor-pointer ${
-        selectedUser
+        selectedUser?._id === id
           ? "bg-[#F0F1FF]/60"
           : "hover:bg-[#F0F1FF]/40"
       }`}
@@ -23,12 +25,12 @@ const ChatItem = ({
         <UserAvatar
           src={avatar}
           name={name}
-          size="h-11 w-11"
+          size="h-13 w-13"
         />
 
-        {/* {online && ( */}
+        {online && (
           <span className="absolute top-0.5 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
-        {/* )} */}
+        )}
       </div>
 
       <div className="min-w-0 flex-1">

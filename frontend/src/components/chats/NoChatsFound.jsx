@@ -1,8 +1,8 @@
-import { MessageCircleMore, UsersRound } from "lucide-react";
+import { MessageCircleMore, UsersRound, Plus } from "lucide-react";
 
 const ChatEmptyState = ({ onViewContacts }) => {
   return (
-    <div className="flex flex-1 items-center justify-center px-6 min-h-screen border-r border-[#E6E8F2] bg-[#FAFBFF]">
+    <div className="flex flex-1 items-center justify-center px-6 h-full bg-[#FAFBFF]">
       <div className="flex max-w-sm flex-col items-center text-center">
         <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#7F84F7]/10">
           <MessageCircleMore
@@ -17,7 +17,12 @@ const ChatEmptyState = ({ onViewContacts }) => {
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-[#8D91A3]">
-          Start a conversation with someone from your contacts.
+          Start a new conversation by clicking the{" "}
+          <span className="inline-flex items-center align-middle text-[#7F84F7]">
+            <Plus size={18} strokeWidth={2.3} />
+          </span>{" "}
+          icon or{" "}
+          <span className="font-medium text-[#7F84F7]">View Contacts</span>.
         </p>
 
         <button

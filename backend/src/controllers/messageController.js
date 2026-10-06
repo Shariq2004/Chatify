@@ -91,14 +91,17 @@ export const sendMessage = async (req, res) => {
   }
 };
 
+
 export const getChatPartners = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
 
-    // find all the messages where the logged-in user is either sender or receiver
     const messages = await Message.find({
-      $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
-    });
+      $or: [
+        { senderId: loggedInUserId },
+        { receiverId: loggedInUserId },
+      ],
+    }).sort({ createdAt: -1 });
 
     const chatPartnerIds = [
       ...new Set(
@@ -110,11 +113,62 @@ export const getChatPartners = async (req, res) => {
       ),
     ];
 
-    const chatPartners = await User.find({ _id: { $in: chatPartnerIds } }).select("-password");
+    const chatPartners = await User.find({
+      _id: { $in: chatPartnerIds },
+    }).select("-password");
 
-    res.status(200).json(chatPartners);
+    const chats = chatPartnerIds.map((partnerId) => {
+      const partner = chatPartners.find(
+        (user) => user._id.toString() === partnerId
+      );
+
+      const lastMessage = messages.find(
+        (msg) =>
+          (msg.senderId.toString() === loggedInUserId.toString() &&
+            msg.receiverId.toString() === partnerId) ||
+          (msg.senderId.toString() === partnerId &&
+            msg.receiverId.toString() === loggedInUserId.toString())
+      );
+
+      return {
+        ...partner.toObject(),
+        lastMessage: lastMessage?.text || "",
+        lastMessageTime: lastMessage?.createdAt || null,
+        unreadCount: 0,
+      };
+    });
+
+    res.status(200).json(chats);
   } catch (error) {
-    console.error("Error in getChatPartners: ", error.message);
+    console.error("Error in getChatPartners:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// export const getChatPartners = async (req, res) => {
+//   try {
+//     const loggedInUserId = req.user._id;
+
+//     // find all the messages where the logged-in user is either sender or receiver
+//     const messages = await Message.find({
+//       $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
+//     });
+
+//     const chatPartnerIds = [
+//       ...new Set(
+//         messages.map((msg) =>
+//           msg.senderId.toString() === loggedInUserId.toString()
+//             ? msg.receiverId.toString()
+//             : msg.senderId.toString()
+//         )
+//       ),
+//     ];
+
+//     const chatPartners = await User.find({ _id: { $in: chatPartnerIds } }).select("-password");
+
+//     res.status(200).json(chatPartners);
+//   } catch (error) {
+//     console.error("Error in getChatPartners: ", error.message);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };

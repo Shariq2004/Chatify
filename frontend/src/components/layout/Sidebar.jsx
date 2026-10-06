@@ -14,8 +14,13 @@ import ProfileAvatar from "../common/ProfileAvatar";
 const Sidebar = () => {
   const [isRead, setIsRead] = useState(true);
   const { authUser, logout } = useAuthStore();
-  const { isSidebarOpen, toggleSidebar, isActiveTab, setIsActiveTab } =
-    useChatStore();
+  const {
+    isSidebarOpen,
+    toggleSidebar,
+    isActiveTab,
+    setIsActiveTab,
+    resetChatStoreState,
+  } = useChatStore();
 
   const navItems = [
     {
@@ -31,6 +36,14 @@ const Sidebar = () => {
       icon: UsersRound,
     },
   ];
+
+  const handleLogout = async () => {
+    const success = await logout();
+
+    if (success) {
+      resetChatStoreState();
+    }
+  };
 
   return (
     <aside
@@ -143,7 +156,7 @@ const Sidebar = () => {
       <div className="border-t border-slate-100 px-3 py-4">
         <button
           type="button"
-          onClick={logout}
+          onClick={handleLogout}
           className={`mb-3 flex h-11 w-full items-center rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-500 cursor-pointer transition-all duration-200 ${
             isSidebarOpen ? "gap-3 px-3" : "justify-center"
           }`}
