@@ -5,6 +5,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import ScrollToBottomButton from "./ScrollToBottomButton";
 import formatMessageDateSeparator from "../../lib/formatMessageDateSeparator";
 import isWithinOneMinute from "../../lib/isWithinOneMinute";
+import Avatar from "../common/UserAvatar";
 
 const MessageList = () => {
   const { messages, selectedUser } = useChatStore();
@@ -82,7 +83,9 @@ const MessageList = () => {
 
             const showDateSeparator = currentDate !== previousDate;
 
-            const isSent = message.senderId === authUser?._id;
+            // const isSent = message.senderId === authUser?._id;
+            const senderId = message.senderId?._id ?? message.senderId;
+            const isSent = String(senderId) === String(authUser?._id); 
 
             const isSameGroupAsPrevious = isWithinOneMinute(
               previousMessage,
@@ -115,12 +118,13 @@ const MessageList = () => {
                   } ${isFirstInGroup ? "mt-4 first:mt-0" : "mt-0.75"}`}
                 >
                   {!isSent && (
-                    <div className="w-8 shrink-0">
+                    <div className="w-7 shrink-0">
                       {isFirstInGroup && (
-                        <img
-                          src={message.senderId?.profilePic || "/avatar.png"}
+                        <Avatar
+                          src={message.senderId?.profilePic}
+                          name={message.senderId?.fullName || selectedUser?.fullName }
+                          size="h-8 w-8"
                           alt=""
-                          className="mb-1 h-8 w-8 rounded-full object-cover"
                         />
                       )}
                     </div>

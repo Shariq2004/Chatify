@@ -14,6 +14,8 @@ const ChatWindow = () => {
     getMessagesByUserId,
     messages,
     isMessagesLoading,
+    listenForMessages,
+    stopListeningToMessages,
   } = useChatStore();
 
   useEffect(() => {
@@ -30,7 +32,12 @@ const ChatWindow = () => {
     if (!selectedUser?._id) return;
 
     getMessagesByUserId(selectedUser._id);
-  }, [selectedUser?._id, getMessagesByUserId]);
+    listenForMessages();
+
+    return () => {
+      stopListeningToMessages();
+    };
+  }, [ selectedUser?._id, getMessagesByUserId, listenForMessages, stopListeningToMessages, ]);
 
   return (
     <div className="relative flex min-w-0 flex-1 overflow-hidden">
