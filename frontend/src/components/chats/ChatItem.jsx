@@ -1,5 +1,6 @@
 import UserAvatar from "../common/UserAvatar";
 import { Check, X } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const ChatItem = ({
   id,
@@ -8,10 +9,14 @@ const ChatItem = ({
   time,
   avatar,
   unread,
-  online,
   click,
   selectedUser,
 }) => {
+
+  const { onlineUsers } = useAuthStore();
+  
+  const isOnline = onlineUsers.includes(id);
+
   return (
     <button
       type="button"
@@ -23,16 +28,12 @@ const ChatItem = ({
       <div className="relative shrink-0">
         <UserAvatar src={avatar} name={name} size="h-13 w-13" />
 
-        {/* {online && (
-          <span className="absolute top-0.5 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
-        )} */}
-
         <span
-          className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-white ${
-            online ? "bg-emerald-500" : "bg-slate-400"
+          className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white ${
+            isOnline ? "bg-emerald-500" : "bg-slate-400"
           }`}
         >
-          {online ? (
+          {isOnline ? (
             <Check size={7} strokeWidth={3} className="text-white" />
           ) : (
             <X size={7} strokeWidth={3} className="text-white" />

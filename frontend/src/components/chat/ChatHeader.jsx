@@ -1,9 +1,13 @@
-import { MoreVertical, Phone, Video, X } from "lucide-react";
+import { MoreVertical, Phone, Video, X, Check } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import UserAvatar from "../common/UserAvatar";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const ChatHeader = () => {
   const { selectedUser, toggleProfile } = useChatStore();
+  const { onlineUsers } = useAuthStore();
+
+  const isOnline = selectedUser?._id ? onlineUsers.includes(selectedUser._id) : false;
 
   return (
     <header className="flex h-19 shrink-0 items-center justify-between border-b border-[#E6E8F2] bg-[#FFFFFF] px-6">
@@ -17,17 +21,14 @@ const ChatHeader = () => {
             name={selectedUser.fullName}
             size="h-11 w-11"
           />
-
-          {/* {selectedUser.isOnline && (
-            <span className="absolute right-0.5 top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
-          )} */}
+ 
 
           <span
-              className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-white ${
-                selectedUser.isOnline ? "bg-emerald-500" : "bg-slate-400"
+              className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white ${
+                isOnline ? "bg-emerald-500" : "bg-slate-400"
               }`}
             >
-              {selectedUser.isOnline ? (
+              {isOnline ? (
                 <Check size={7} strokeWidth={3} className="text-white" />
               ) : (
                 <X size={7} strokeWidth={3} className="text-white" />
@@ -42,10 +43,10 @@ const ChatHeader = () => {
 
           <p
             className={`mt-0.5 text-xs font-medium ${
-              selectedUser.isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
+              isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
             }`}
           >
-            {selectedUser.isOnline ? "Online" : "Offline"}
+            {isOnline ? "Online" : "Offline"}
           </p>
         </div>
       </div>

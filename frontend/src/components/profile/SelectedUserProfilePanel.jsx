@@ -8,12 +8,16 @@ import {
   X,
 } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import UserAvatar from "../common/UserAvatar";
 import AllMedia from "./AllMedia";
 
 const ProfilePanel = () => {
-  const { isProfileOpen, toggleProfile, selectedUser, messages } =
-    useChatStore();
+  const { isProfileOpen, toggleProfile, selectedUser, messages } = useChatStore();
+  const { onlineUsers } = useAuthStore();
+  
+  const isOnline = selectedUser?._id ? onlineUsers.includes(selectedUser._id) : false;
+
   const [showAllMedia, setShowAllMedia] = useState(false);
 
   const media = messages.filter((message) => message.image);
@@ -59,10 +63,10 @@ const ProfilePanel = () => {
               <div className="mt-1.5 flex items-center gap-1.5">
                 <span
                   className={`inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full ${
-                    selectedUser?.isOnline ? "bg-[#55C58A]" : "bg-[#9AA0B5]"
+                    isOnline ? "bg-[#55C58A]" : "bg-[#9AA0B5]"
                   }`}
                 >
-                  {selectedUser?.isOnline ? (
+                  {isOnline ? (
                     <Check
                       size={9}
                       strokeWidth={3}
@@ -75,10 +79,10 @@ const ProfilePanel = () => {
 
                 <span
                   className={`text-[12px] font-medium ${
-                    selectedUser?.isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
+                    isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
                   }`}
                 >
-                  {selectedUser?.isOnline ? "Online" : "Offline"}
+                  {isOnline ? "Online" : "Offline"}
                 </span>
               </div>
 
