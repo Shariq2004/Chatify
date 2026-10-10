@@ -1,11 +1,14 @@
 import cloudinary from "../config/cloudinary.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
+import fs from "fs";
 
 export const getAllContacts = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
-    const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+    const filteredUsers = await User.find({
+      _id: { $ne: loggedInUserId },
+    }).select("-password");
 
     res.status(200).json(filteredUsers);
   } catch (error) {
@@ -27,7 +30,7 @@ export const getMessagesByUserId = async (req, res) => {
       },
       {
         $set: { isRead: true },
-      }
+      },
     );
 
     const messages = await Message.find({
@@ -35,7 +38,7 @@ export const getMessagesByUserId = async (req, res) => {
         { senderId: myId, receiverId: userToChatId },
         { senderId: userToChatId, receiverId: myId },
       ],
-    });
+    }).sort({ createdAt: 1 });;
 
     res.status(200).json(messages);
   } catch (error) {
@@ -51,15 +54,15 @@ export const sendMessage = async (req, res) => {
     const senderId = req.user._id;
 
     if (!text && !req.file) {
-      return res
-        .status(400)
-        .json({ message: "Text or image is required." });
+      return res.status(400).json({ message: "Text or image is required." });
     }
 
     if (senderId.equals(receiverId)) {
-      return res.status(400).json({ message: "Cannot send messages to yourself." });
+      return res
+        .status(400)
+        .json({ message: "Cannot send messages to yourself." });
     }
-    
+
     const receiverExists = await User.exists({ _id: receiverId });
     if (!receiverExists) {
       return res.status(404).json({ message: "Receiver not found." });
@@ -67,12 +70,23 @@ export const sendMessage = async (req, res) => {
 
     let imageUrl;
 
+    // if (req.file) {
+    //   const uploadResponse = await cloudinary.uploader.upload(
+    //     req.file.path
+    //   );
+
+    //   imageUrl = uploadResponse.secure_url;
+    // }
+
     if (req.file) {
-      const uploadResponse = await cloudinary.uploader.upload(
-        req.file.path
-      );
+      const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "image",
+        folder: "chatify-message-img",
+      });
 
       imageUrl = uploadResponse.secure_url;
+
+      fs.unlinkSync(req.file.path);
     }
 
     const newMessage = new Message({
@@ -91,16 +105,12 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-
 export const getChatPartners = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
 
     const messages = await Message.find({
-      $or: [
-        { senderId: loggedInUserId },
-        { receiverId: loggedInUserId },
-      ],
+      $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
     }).sort({ createdAt: -1 });
 
     const chatPartnerIds = [
@@ -108,8 +118,8 @@ export const getChatPartners = async (req, res) => {
         messages.map((msg) =>
           msg.senderId.toString() === loggedInUserId.toString()
             ? msg.receiverId.toString()
-            : msg.senderId.toString()
-        )
+            : msg.senderId.toString(),
+        ),
       ),
     ];
 
@@ -119,7 +129,7 @@ export const getChatPartners = async (req, res) => {
 
     const chats = chatPartnerIds.map((partnerId) => {
       const partner = chatPartners.find(
-        (user) => user._id.toString() === partnerId
+        (user) => user._id.toString() === partnerId,
       );
 
       const lastMessage = messages.find(
@@ -127,7 +137,7 @@ export const getChatPartners = async (req, res) => {
           (msg.senderId.toString() === loggedInUserId.toString() &&
             msg.receiverId.toString() === partnerId) ||
           (msg.senderId.toString() === partnerId &&
-            msg.receiverId.toString() === loggedInUserId.toString())
+            msg.receiverId.toString() === loggedInUserId.toString()),
       );
 
       return {

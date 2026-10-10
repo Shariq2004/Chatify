@@ -1,4 +1,4 @@
-import { MoreVertical, Phone, Video } from "lucide-react";
+import { MoreVertical, Phone, Video, X } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import UserAvatar from "../common/UserAvatar";
 
@@ -18,9 +18,21 @@ const ChatHeader = () => {
             size="h-11 w-11"
           />
 
-          {selectedUser.isOnline && (
+          {/* {selectedUser.isOnline && (
             <span className="absolute right-0.5 top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
-          )}
+          )} */}
+
+          <span
+              className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-white ${
+                selectedUser.isOnline ? "bg-emerald-500" : "bg-slate-400"
+              }`}
+            >
+              {selectedUser.isOnline ? (
+                <Check size={7} strokeWidth={3} className="text-white" />
+              ) : (
+                <X size={7} strokeWidth={3} className="text-white" />
+              )}
+            </span>
         </div>
 
         <div className="min-w-0">
@@ -30,9 +42,7 @@ const ChatHeader = () => {
 
           <p
             className={`mt-0.5 text-xs font-medium ${
-              selectedUser.isOnline
-                ? "text-emerald-500"
-                : "text-slate-400"
+              selectedUser.isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
             }`}
           >
             {selectedUser.isOnline ? "Online" : "Offline"}

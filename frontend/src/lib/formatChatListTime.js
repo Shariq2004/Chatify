@@ -1,4 +1,4 @@
-export const formatChatTime = (date) => {
+export const formatChatListTime = (date) => {
   const messageDate = new Date(date);
   const now = new Date();
 
@@ -43,3 +43,5 @@ export const formatChatTime = (date) => {
     year: "numeric",
   });
 };
+
+export default formatChatListTime;

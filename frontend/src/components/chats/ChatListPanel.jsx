@@ -4,7 +4,7 @@ import ChatFilters from "./ChatFilters";
 import ChatItem from "./ChatItem";
 import NoChatsFound from "./NoChatsFound";
 import { useChatStore } from "../../store/useChatStore";
-import { formatChatTime } from "../../lib/formatChatTime";
+import formatChatListTime from "../../lib/formatChatListTime";
 import ChatItemSkeleton from "./ChatItemSkeleton";
 import SearchInput from "../common/SearchInput";
 
@@ -64,25 +64,23 @@ const ChatListPanel = () => {
         </div>
       </div>
 
-          <SearchInput
-            search={search}
-            setSearch={setSearch}
-            placeholder="Search conversations..."
-          />
+      <SearchInput
+        search={search}
+        setSearch={setSearch}
+        placeholder="Search conversations..."
+      />
 
-          <div className="flex shrink-0 items-center justify-between px-4 py-3">
-            <ChatFilters />
+      <div className="flex shrink-0 items-center justify-between px-4 py-3">
+        <ChatFilters />
 
-            <button
-              type="button"
-              onClick={() => setIsActiveTab("Contacts")}
-              className="ml-3 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#7F84F7]/10 text-[#7F84F7] transition-all duration-200 hover:bg-[#7F84F7]/15 hover:text-[#7076E8]"
-            >
-              <Plus size={20} strokeWidth={2.3} />
-            </button>
-          </div>
-      
-      
+        <button
+          type="button"
+          onClick={() => setIsActiveTab("Contacts")}
+          className="ml-3 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#7F84F7] text-white shadow-sm transition-all duration-200 hover:bg-[#7076E8] hover:shadow-md active:scale-95"
+        >
+          <Plus size={19} strokeWidth={2.3} />
+        </button>
+      </div>
 
       <div className="chatuser-scrollbar h-full overflow-y-auto  pb-3">
         {isUsersLoading ? (
@@ -105,7 +103,7 @@ const ChatListPanel = () => {
                 id={chat._id}
                 name={chat.fullName}
                 message={chat.lastMessage}
-                time={formatChatTime(chat.lastMessageTime)}
+                time={formatChatListTime(chat.lastMessageTime)}
                 avatar={chat.profilePic}
                 unread={chat.unread}
                 online={chat.isOnline}
