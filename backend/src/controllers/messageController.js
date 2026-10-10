@@ -2,6 +2,7 @@ import cloudinary from "../config/cloudinary.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import fs from "fs";
+import { getReceiverSocketId, io } from "../config/socket.js";
 
 export const getAllContacts = async (req, res) => {
   try {
@@ -38,7 +39,9 @@ export const getMessagesByUserId = async (req, res) => {
         { senderId: myId, receiverId: userToChatId },
         { senderId: userToChatId, receiverId: myId },
       ],
-    }).sort({ createdAt: 1 });;
+    })
+      .populate("senderId", "fullName profilePic")
+      .sort({ createdAt: 1 });
 
     res.status(200).json(messages);
   } catch (error) {
@@ -70,14 +73,6 @@ export const sendMessage = async (req, res) => {
 
     let imageUrl;
 
-    // if (req.file) {
-    //   const uploadResponse = await cloudinary.uploader.upload(
-    //     req.file.path
-    //   );
-
-    //   imageUrl = uploadResponse.secure_url;
-    // }
-
     if (req.file) {
       const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "image",
@@ -98,7 +93,22 @@ export const sendMessage = async (req, res) => {
 
     await newMessage.save();
 
-    res.status(201).json(newMessage);
+    // const receiverSocketId = getReceiverSocketId(receiverId);
+    // if(receiverSocketId){
+    //   io.to(receiverSocketId).emit("newMessage", newMessage);
+    // }
+
+    // res.status(201).json(newMessage);
+
+    const populatedMessage = await Message.findById(newMessage._id).populate("senderId", "fullName profilePic", );
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", populatedMessage);
+    }
+
+    res.status(201).json(populatedMessage);
   } catch (error) {
     console.log("Error in sendMessage controller:", error.message);
     res.status(500).json({ message: "Internal server error" });
