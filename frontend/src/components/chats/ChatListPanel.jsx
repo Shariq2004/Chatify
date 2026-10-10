@@ -106,7 +106,6 @@ const ChatListPanel = () => {
                 time={formatChatListTime(chat.lastMessageTime)}
                 avatar={chat.profilePic}
                 unread={chat.unread}
-                online={chat.isOnline}
                 click={() => setSelectedUser(chat)}
                 selectedUser={selectedUser}
               />

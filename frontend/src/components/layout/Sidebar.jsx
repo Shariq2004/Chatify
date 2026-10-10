@@ -7,6 +7,7 @@ import {
   ChevronRight,
   LogOut,
   X,
+  Check,
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useChatStore } from "../../store/useChatStore";
@@ -14,7 +15,10 @@ import ProfileAvatar from "../common/ProfileAvatar";
 
 const Sidebar = () => {
   const [isRead, setIsRead] = useState(true);
-  const { authUser, logout } = useAuthStore();
+  const { authUser, logout, onlineUsers } = useAuthStore();
+
+  const isOnline = authUser?._id ? onlineUsers.includes(authUser._id) : false;
+
   const {
     isSidebarOpen,
     toggleSidebar,
@@ -182,13 +186,12 @@ const Sidebar = () => {
           <div className="relative shrink-0">
             <ProfileAvatar src={authUser?.profilePic} />
 
-            {/* <span className="absolute top-0.5 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" /> */}
             <span
-              className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-white ${
-                authUser.isOnline ? "bg-emerald-500" : "bg-slate-400"
+              className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white ${
+                isOnline ? "bg-emerald-500" : "bg-slate-400"
               }`}
             >
-              {authUser.isOnline ? (
+              {isOnline ? (
                 <Check size={7} strokeWidth={3} className="text-white" />
               ) : (
                 <X size={7} strokeWidth={3} className="text-white" />
@@ -205,10 +208,10 @@ const Sidebar = () => {
 
                 <span
                   className={`text-[12px] font-medium ${
-                    authUser?.isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
+                    isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
                   }`}
                 >
-                  {authUser?.isOnline ? "Online" : "Offline"}
+                  {isOnline ? "Online" : "Offline"}
                 </span>
               </div>
             </>

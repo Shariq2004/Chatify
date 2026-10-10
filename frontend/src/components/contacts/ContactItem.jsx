@@ -1,7 +1,10 @@
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Check, X } from "lucide-react";
 import UserAvatar from "../common/UserAvatar";
+import { useAuthStore } from "../../store/useAuthStore";
 
-const ContactItem = ({id, name, avatar, online,selectedUser,click }) => {
+const ContactItem = ({ id, name, avatar, online, selectedUser, click }) => {
+  const { onlineUsers } = useAuthStore();
+  const isOnline = onlineUsers.includes(id);
 
   return (
     <button
@@ -9,22 +12,24 @@ const ContactItem = ({id, name, avatar, online,selectedUser,click }) => {
       onClick={click}
       className={`group flex w-full cursor-pointer items-center gap-3 rounded-2xl px-3 py-3 text-left transition-all duration-200
          ${
-          selectedUser?._id === id
-          ? "bg-[#7F84F7]/6"
-          : "hover:bg-[#F0F1FF]/60"
+           selectedUser?._id === id ? "bg-[#7F84F7]/6" : "hover:bg-[#F0F1FF]/60"
          }
          `}
     >
       <div className="relative shrink-0">
-        <UserAvatar
-          src={avatar}
-          name={name}
-          size="h-13 w-13"
-        />
+        <UserAvatar src={avatar} name={name} size="h-13 w-13" />
 
-        {online && (
-          <span className="absolute top-0.5 right-0 h-2.5 w-2.5 rounded-full border-2 border-[#FAFBFF] bg-emerald-400" />
-        )}
+        <span
+          className={`absolute bottom-0.5 right-0.5 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white ${
+            isOnline ? "bg-emerald-500" : "bg-slate-400"
+          }`}
+        >
+          {isOnline ? (
+            <Check size={7} strokeWidth={3} className="text-white" />
+          ) : (
+            <X size={7} strokeWidth={3} className="text-white" />
+          )}
+        </span>
       </div>
 
       <div className="min-w-0 flex-1">
@@ -34,10 +39,10 @@ const ContactItem = ({id, name, avatar, online,selectedUser,click }) => {
 
         <p
           className={`mt-0.5 text-xs ${
-            online ? "text-emerald-500" : "text-slate-400"
+            isOnline ? "text-emerald-500" : "text-slate-400"
           }`}
         >
-          {online ? "Online" : "Offline"}
+          {isOnline ? "Online" : "Offline"}
         </p>
       </div>
 

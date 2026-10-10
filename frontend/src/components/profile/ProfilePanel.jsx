@@ -14,7 +14,7 @@ import ProfileAvatar from "../common/ProfileAvatar";
 import { useState } from "react";
 
 const ProfilePanel = () => {
-  const { authUser, updateProfile, isUpdatingProfile } = useAuthStore();
+  const { authUser, updateProfile, isUpdatingProfile, onlineUsers } = useAuthStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -25,6 +25,8 @@ const ProfilePanel = () => {
     bio: authUser?.bio || "",
     status: authUser?.status || "",
   });
+
+  const isOnline = authUser?._id ? onlineUsers.includes(authUser._id) : false;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -126,10 +128,10 @@ const ProfilePanel = () => {
           <div className="mt-1.5 flex items-center gap-1.5">
             <span
               className={`inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full ${
-                authUser?.isOnline ? "bg-[#55C58A]" : "bg-[#9AA0B5]"
+                isOnline ? "bg-[#55C58A]" : "bg-[#9AA0B5]"
               }`}
             >
-              {authUser?.isOnline ? (
+              {isOnline ? (
                 <Check size={9} strokeWidth={3} className="block text-white" />
               ) : (
                 <X size={9} strokeWidth={3} className="block text-white" />
@@ -138,10 +140,10 @@ const ProfilePanel = () => {
 
             <span
               className={`text-[12px] font-medium ${
-                authUser?.isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
+                isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
               }`}
             >
-              {authUser?.isOnline ? "Online" : "Offline"}
+              {isOnline ? "Online" : "Offline"}
             </span>
           </div>
         </div>
