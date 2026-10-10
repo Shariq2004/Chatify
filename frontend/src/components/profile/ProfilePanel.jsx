@@ -7,6 +7,7 @@ import {
   Check,
   Pencil,
   LoaderCircle,
+  X,
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import ProfileAvatar from "../common/ProfileAvatar";
@@ -95,6 +96,7 @@ const ProfilePanel = () => {
             <ProfileAvatar
               src={selectedImg?.url || authUser?.profilePic}
               size="h-24 w-24"
+              IconSize={40}
             />
 
             {isEditing && (
@@ -122,10 +124,24 @@ const ProfilePanel = () => {
           </h3>
 
           <div className="mt-1.5 flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span
+              className={`inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full ${
+                authUser?.isOnline ? "bg-[#55C58A]" : "bg-[#9AA0B5]"
+              }`}
+            >
+              {authUser?.isOnline ? (
+                <Check size={9} strokeWidth={3} className="block text-white" />
+              ) : (
+                <X size={9} strokeWidth={3} className="block text-white" />
+              )}
+            </span>
 
-            <span className="text-[11px] font-medium text-emerald-500">
-              Online
+            <span
+              className={`text-[12px] font-medium ${
+                authUser?.isOnline ? "text-[#55C58A]" : "text-[#8D91A3]"
+              }`}
+            >
+              {authUser?.isOnline ? "Online" : "Offline"}
             </span>
           </div>
         </div>

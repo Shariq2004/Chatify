@@ -1,4 +1,5 @@
 import UserAvatar from "../common/UserAvatar";
+import { Check, X } from "lucide-react";
 
 const ChatItem = ({
   id,
@@ -9,28 +10,34 @@ const ChatItem = ({
   unread,
   online,
   click,
-  selectedUser
+  selectedUser,
 }) => {
   return (
     <button
       type="button"
       onClick={click}
       className={`group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all duration-200 cursor-pointer ${
-        selectedUser?._id === id
-          ? "bg-[#F0F1FF]/60"
-          : "hover:bg-[#F0F1FF]/40"
+        selectedUser?._id === id ? "bg-[#F0F1FF]/60" : "hover:bg-[#F0F1FF]/40"
       }`}
     >
       <div className="relative shrink-0">
-        <UserAvatar
-          src={avatar}
-          name={name}
-          size="h-13 w-13"
-        />
+        <UserAvatar src={avatar} name={name} size="h-13 w-13" />
 
-        {online && (
+        {/* {online && (
           <span className="absolute top-0.5 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
-        )}
+        )} */}
+
+        <span
+          className={`absolute bottom-0.5 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-white ${
+            online ? "bg-emerald-500" : "bg-slate-400"
+          }`}
+        >
+          {online ? (
+            <Check size={7} strokeWidth={3} className="text-white" />
+          ) : (
+            <X size={7} strokeWidth={3} className="text-white" />
+          )}
+        </span>
       </div>
 
       <div className="min-w-0 flex-1">
@@ -41,9 +48,7 @@ const ChatItem = ({
 
           <span
             className={`shrink-0 text-[10px] ${
-              unread > 0
-                ? "font-semibold text-[#7F84F7]"
-                : "text-slate-400"
+              unread > 0 ? "font-semibold text-[#7F84F7]" : "text-slate-400"
             }`}
           >
             {time}
@@ -53,9 +58,7 @@ const ChatItem = ({
         <div className="mt-1 flex items-center justify-between gap-2">
           <p
             className={`truncate text-xs ${
-              unread > 0
-                ? "font-medium text-slate-500"
-                : "text-slate-400"
+              unread > 0 ? "font-medium text-slate-500" : "text-slate-400"
             }`}
           >
             {message}
