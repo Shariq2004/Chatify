@@ -4,6 +4,7 @@ import ChatFilters from "./ChatFilters";
 import ChatItem from "./ChatItem";
 import NoChatsFound from "./NoChatsFound";
 import { useChatStore } from "../../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import formatChatListTime from "../../lib/formatChatListTime";
 import ChatItemSkeleton from "./ChatItemSkeleton";
 import SearchInput from "../common/SearchInput";
@@ -20,17 +21,38 @@ const ChatListPanel = () => {
     selectedUser,
     setSelectedUser,
     getMyChats,
+    listenForMessages,
+    stopListeningToMessages,
   } = useChatStore();
+  const { socket } = useAuthStore();
 
   const [search, setSearch] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
 
-  const filteredChats = chats.filter((chat) =>
-    chat.fullName?.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filteredChats = chats.filter((chat) => {
+  const matchesSearch = chat.fullName
+    ?.toLowerCase()
+    .includes(search.toLowerCase());
+
+  const matchesFilter =
+    activeFilter === "All" || chat.unreadCount > 0;
+
+  return matchesSearch && matchesFilter;
+});
 
   useEffect(() => {
     getMyChats();
   }, [getMyChats]);
+
+  useEffect(() => {
+  if (!socket) return;
+
+  listenForMessages();
+
+  return () => {
+    stopListeningToMessages();
+  };
+}, [socket, listenForMessages, stopListeningToMessages]);
 
   return (
     <section className="flex h-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
@@ -71,7 +93,7 @@ const ChatListPanel = () => {
       />
 
       <div className="flex shrink-0 items-center justify-between px-4 py-3">
-        <ChatFilters />
+        <ChatFilters activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
         <button
           type="button"
@@ -102,10 +124,10 @@ const ChatListPanel = () => {
                 key={chat._id}
                 id={chat._id}
                 name={chat.fullName}
-                message={chat.lastMessage}
+                message={chat.lastMessage} 
                 time={formatChatListTime(chat.lastMessageTime)}
                 avatar={chat.profilePic}
-                unread={chat.unread}
+                unread={chat.unreadCount}
                 click={() => setSelectedUser(chat)}
                 selectedUser={selectedUser}
               />

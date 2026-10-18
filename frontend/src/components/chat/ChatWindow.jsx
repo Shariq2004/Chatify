@@ -32,12 +32,8 @@ const ChatWindow = () => {
     if (!selectedUser?._id) return;
 
     getMessagesByUserId(selectedUser._id);
-    listenForMessages();
 
-    return () => {
-      stopListeningToMessages();
-    };
-  }, [ selectedUser?._id, getMessagesByUserId, listenForMessages, stopListeningToMessages, ]);
+  }, [ selectedUser?._id, getMessagesByUserId ]);
 
   return (
     <div className="relative flex min-w-0 flex-1 overflow-hidden">

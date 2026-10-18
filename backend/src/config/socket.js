@@ -3,6 +3,7 @@ import http from "http";
 import express from "express";
 import { socketAuthMiddleware } from "../middleware/socketAuthMiddleware.js";
 import User from "../models/User.js";
+import Message from "../models/Message.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -40,6 +41,51 @@ io.on("connection", async (socket) => {
   // io.emit() is used to send events to all connected clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
+  socket.on("markMessagesRead", async ({ senderId } = {}) => {
+    try {
+      const readerId = socket.userId;
+
+      if (!senderId || String(senderId) === String(readerId)) {
+        return;
+      }
+
+      const unreadMessages = await Message.find({
+        senderId,
+        receiverId: readerId,
+        isRead: false,
+      }).select("_id");
+
+      if (unreadMessages.length === 0) return;
+
+      const messageIds = unreadMessages.map((message) =>
+        message._id.toString(),
+      );
+
+      await Message.updateMany(
+        {
+          _id: { $in: messageIds },
+          senderId,
+          receiverId: readerId,
+          isRead: false,
+        },
+        {
+          $set: { isRead: true },
+        },
+      );
+
+      const senderSocketId = getReceiverSocketId(String(senderId));
+
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("messagesRead", {
+          messageIds,
+          readerId: String(readerId),
+        });
+      }
+    } catch (error) {
+      console.error("Error marking messages as read:", error.message);
+    }
+  });
+
   // with socket.on we listen for events from clients
   socket.on("disconnect", async () => {
     console.log("A user disconnected", socket.user.fullName);
@@ -48,7 +94,7 @@ io.on("connection", async (socket) => {
       delete userSocketMap[userId];
 
       try {
-        await User.findByIdAndUpdate(userId, { isOnline: false, });
+        await User.findByIdAndUpdate(userId, { isOnline: false });
       } catch (error) {
         console.error("Error updating offline status:", error.message);
       }
