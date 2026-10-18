@@ -4,7 +4,6 @@ import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import ScrollToBottomButton from "./ScrollToBottomButton";
 import formatMessageDateSeparator from "../../lib/formatMessageDateSeparator";
-import isWithinOneMinute from "../../lib/isWithinOneMinute";
 import Avatar from "../common/UserAvatar";
 
 const MessageList = () => {
@@ -16,17 +15,42 @@ const MessageList = () => {
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
-  const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString([], {
+  const formatTime = (timestamp) =>
+    new Date(timestamp).toLocaleTimeString([], {
       hour: "numeric",
       minute: "2-digit",
     });
-  };
 
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
+      block: "end",
     });
+  };
+
+  const getSenderId = (message) =>
+    String(message?.senderId?._id ?? message?.senderId ?? "");
+
+  // Check whether two consecutive messages belong together
+  const areWithinOneMinute = (first, second) => {
+    if (!first || !second) return false;
+
+    if (getSenderId(first) !== getSenderId(second)) {
+      return false;
+    }
+
+    const firstTime = new Date(first.createdAt).getTime();
+    const secondTime = new Date(second.createdAt).getTime();
+
+    if (!Number.isFinite(firstTime) || !Number.isFinite(secondTime)) {
+      return false;
+    }
+
+    return (
+      Math.abs(secondTime - firstTime) < 60 * 1000 &&
+      new Date(firstTime).toDateString() ===
+        new Date(secondTime).toDateString()
+    );
   };
 
   useEffect(() => {
@@ -34,12 +58,14 @@ const MessageList = () => {
 
     bottomRef.current?.scrollIntoView({
       behavior: "auto",
+      block: "end",
     });
   }, [selectedUser]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
+      block: "end",
     });
   }, [messages]);
 
@@ -50,13 +76,14 @@ const MessageList = () => {
 
     const handleScroll = () => {
       const distanceFromBottom =
-        container.scrollHeight - container.scrollTop - container.clientHeight;
+        container.scrollHeight -
+        container.scrollTop -
+        container.clientHeight;
 
       setShowScrollButton(distanceFromBottom > 100);
     };
 
     handleScroll();
-
     container.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -68,14 +95,16 @@ const MessageList = () => {
     <div className="relative min-h-0 flex-1">
       <div
         ref={scrollContainerRef}
-        className="chatify-scrollbar h-full overflow-y-auto bg-[#F3F4FA] px-5 py-4"
+        className="chatify-scrollbar h-full overflow-y-auto bg-[#F3F4FA] px-6 py-4"
       >
         <div className="flex w-full flex-col">
           {messages.map((message, index) => {
             const previousMessage = messages[index - 1];
             const nextMessage = messages[index + 1];
 
-            const currentDate = new Date(message.createdAt).toDateString();
+            const currentDate = new Date(
+              message.createdAt,
+            ).toDateString();
 
             const previousDate = previousMessage
               ? new Date(previousMessage.createdAt).toDateString()
@@ -83,24 +112,30 @@ const MessageList = () => {
 
             const showDateSeparator = currentDate !== previousDate;
 
-            // const isSent = message.senderId === authUser?._id;
-            const senderId = message.senderId?._id ?? message.senderId;
-            const isSent = String(senderId) === String(authUser?._id); 
+            const isSent =
+              getSenderId(message) === String(authUser?._id);
 
-            const isSameGroupAsPrevious = isWithinOneMinute(
+            // Show avatar once for consecutive messages
+            // from the same sender within one minute.
+            const isWithinPrevious = areWithinOneMinute(
               previousMessage,
               message,
-              authUser?._id,
             );
 
-            const isSameGroupAsNext = isWithinOneMinute(
+            const isWithinNext = areWithinOneMinute(
               message,
               nextMessage,
-              authUser?._id,
             );
 
-            const isFirstInGroup = !isSameGroupAsPrevious;
-            const isLastInGroup = !isSameGroupAsNext;
+            const showAvatar = !isSent && !isWithinPrevious;
+            const showTime = !isWithinNext;
+
+            const imageUrl =
+              typeof message.image === "string"
+                ? message.image
+                : message.image?.secure_url ||
+                  message.image?.url ||
+                  "";
 
             return (
               <div key={message._id}>
@@ -115,14 +150,18 @@ const MessageList = () => {
                 <div
                   className={`group flex items-end gap-2 ${
                     isSent ? "justify-end" : "justify-start"
-                  } ${isFirstInGroup ? "mt-4 first:mt-0" : "mt-0.75"}`}
+                  } ${isWithinPrevious ? "mt-1" : "mt-4"}`}
                 >
                   {!isSent && (
                     <div className="w-7 shrink-0">
-                      {isFirstInGroup && (
+                      {showAvatar && (
                         <Avatar
-                          src={message.senderId?.profilePic}
-                          name={message.senderId?.fullName || selectedUser?.fullName }
+                          src={message.senderId?.profilePic || ""}
+                          name={
+                            message.senderId?.fullName ||
+                            selectedUser?.fullName ||
+                            "User"
+                          }
                           size="h-8 w-8"
                           alt=""
                         />
@@ -131,7 +170,7 @@ const MessageList = () => {
                   )}
 
                   <div
-                    className={`flex max-w-[70%] flex-col ${
+                    className={`flex max-w-[70%] min-w-0 flex-col ${
                       isSent ? "items-end" : "items-start"
                     }`}
                   >
@@ -139,6 +178,7 @@ const MessageList = () => {
                       {isSent && (
                         <button
                           type="button"
+                          aria-label="Message options"
                           className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-[#9AA0B5] opacity-0 shadow-sm transition-all duration-200 hover:text-[#7F84F7] group-hover:opacity-100"
                         >
                           <MoreHorizontal size={16} />
@@ -146,40 +186,30 @@ const MessageList = () => {
                       )}
 
                       <div
-                        className={`rounded-[17px] px-4 ${
-                          message.image ? "py-4" : "py-2.5"
+                        className={`min-w-0 rounded-[17px] px-4 ${
+                          imageUrl ? "py-3" : "py-2.5"
                         } text-[14px] leading-6 shadow-sm ${
                           isSent
-                            ? `bg-[#7F84F7] text-white ${
-                                isFirstInGroup
-                                  ? "rounded-tr-[17px]"
-                                  : "rounded-tr-sm"
-                              } ${
-                                isLastInGroup
-                                  ? "rounded-br-[17px]"
-                                  : "rounded-br-sm"
-                              }`
-                            : `border border-[#E7E9F2] bg-white text-[#3F4354] ${
-                                isFirstInGroup
-                                  ? "rounded-tl-[17px]"
-                                  : "rounded-tl-sm"
-                              } ${
-                                isLastInGroup
-                                  ? "rounded-bl-[17px]"
-                                  : "rounded-bl-sm"
-                              }`
+                            ? "bg-[#7F84F7] text-white"
+                            : "border border-[#E7E9F2] bg-white text-[#3F4354]"
                         }`}
                       >
-                        {message.image && (
+                        {imageUrl && (
                           <img
-                            src={message.image}
+                            src={imageUrl}
                             alt="Message attachment"
-                            className={`max-h-70 max-w-65 object-cover rounded-lg`}
+                            className="block max-h-[280px] max-w-full rounded-lg object-contain"
+                            onError={() =>
+                              console.error(
+                                "Message image failed to load:",
+                                imageUrl,
+                              )
+                            }
                           />
                         )}
 
                         {message.text && (
-                          <div className={message.image ? "mt-2" : ""}>
+                          <div className={imageUrl ? "mt-2" : ""}>
                             {message.text}
                           </div>
                         )}
@@ -188,6 +218,7 @@ const MessageList = () => {
                       {!isSent && (
                         <button
                           type="button"
+                          aria-label="Message options"
                           className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-[#9AA0B5] opacity-0 shadow-sm transition-all duration-200 hover:text-[#7F84F7] group-hover:opacity-100"
                         >
                           <MoreHorizontal size={16} />
@@ -195,7 +226,7 @@ const MessageList = () => {
                       )}
                     </div>
 
-                    {isLastInGroup && (
+                    {showTime && (
                       <div
                         className={`mt-1 flex items-center gap-1 px-1 text-[10px] text-[#9AA0B5] ${
                           isSent ? "justify-end" : "justify-start"
@@ -238,7 +269,10 @@ const MessageList = () => {
         </div>
       </div>
 
-      <ScrollToBottomButton show={showScrollButton} onClick={scrollToBottom} />
+      <ScrollToBottomButton
+        show={showScrollButton}
+        onClick={scrollToBottom}
+      />
     </div>
   );
 };

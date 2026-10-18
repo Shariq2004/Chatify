@@ -12,10 +12,10 @@ const ChatItem = ({
   click,
   selectedUser,
 }) => {
-
   const { onlineUsers } = useAuthStore();
-  
+
   const isOnline = onlineUsers.includes(id);
+  console.log("Chat:", name, "Unread:", unread);
 
   return (
     <button
@@ -58,7 +58,7 @@ const ChatItem = ({
 
         <div className="mt-1 flex items-center justify-between gap-2">
           <p
-            className={`truncate text-xs ${
+            className={`max-w-65 truncate text-xs ${
               unread > 0 ? "font-medium text-slate-500" : "text-slate-400"
             }`}
           >
@@ -66,7 +66,7 @@ const ChatItem = ({
           </p>
 
           {unread > 0 && (
-            <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#8184e8] via-[#7E84F1] to-[#6056e8] px-1 text-[10px] font-semibold leading-none text-white">
+            <span className="inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#8184E8] via-[#7E84F1] to-[#6056E8] px-1 text-center text-[10px] font-semibold leading-none tabular-nums text-white">
               {unread}
             </span>
           )}

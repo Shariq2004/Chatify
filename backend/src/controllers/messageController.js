@@ -23,29 +23,51 @@ export const getMessagesByUserId = async (req, res) => {
     const myId = req.user._id;
     const { id: userToChatId } = req.params;
 
-    await Message.updateMany(
-      {
-        senderId: userToChatId,
-        receiverId: myId,
-        isRead: false,
-      },
-      {
-        $set: { isRead: true },
-      },
-    );
+    const unreadMessages = await Message.find({
+      senderId: userToChatId,
+      receiverId: myId,
+      isRead: false,
+    }).select("_id");
+
+    if (unreadMessages.length > 0) {
+      const messageIds = unreadMessages.map((message) =>
+        message._id.toString()
+      );
+
+      await Message.updateMany(
+        {
+          _id: { $in: messageIds },
+          senderId: userToChatId,
+          receiverId: myId,
+          isRead: false,
+        },
+        {
+          $set: { isRead: true },
+        }
+      );
+
+      const senderSocketId = getReceiverSocketId(
+        userToChatId.toString()
+      );
+
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("messagesRead", {
+          messageIds,
+          readerId: myId.toString(),
+        });
+      }
+    }
 
     const messages = await Message.find({
       $or: [
         { senderId: myId, receiverId: userToChatId },
         { senderId: userToChatId, receiverId: myId },
       ],
-    })
-      .populate("senderId", "fullName profilePic")
-      .sort({ createdAt: 1 });
+    }).populate("senderId", "fullName profilePic").sort({ createdAt: 1 });
 
     res.status(200).json(messages);
   } catch (error) {
-    console.log("Error in getMessages controller: ", error.message);
+    console.log("Error in getMessages controller:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -150,11 +172,18 @@ export const getChatPartners = async (req, res) => {
             msg.receiverId.toString() === loggedInUserId.toString()),
       );
 
+      const unreadCount = messages.filter(
+        (msg) =>
+          msg.senderId.toString() === partnerId &&
+          msg.receiverId.toString() === loggedInUserId.toString() &&
+          !msg.isRead,
+      ).length;
+
       return {
         ...partner.toObject(),
         lastMessage: lastMessage?.text || "",
         lastMessageTime: lastMessage?.createdAt || null,
-        unreadCount: 0,
+        unreadCount,
       };
     });
 
@@ -164,31 +193,3 @@ export const getChatPartners = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-// export const getChatPartners = async (req, res) => {
-//   try {
-//     const loggedInUserId = req.user._id;
-
-//     // find all the messages where the logged-in user is either sender or receiver
-//     const messages = await Message.find({
-//       $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
-//     });
-
-//     const chatPartnerIds = [
-//       ...new Set(
-//         messages.map((msg) =>
-//           msg.senderId.toString() === loggedInUserId.toString()
-//             ? msg.receiverId.toString()
-//             : msg.senderId.toString()
-//         )
-//       ),
-//     ];
-
-//     const chatPartners = await User.find({ _id: { $in: chatPartnerIds } }).select("-password");
-
-//     res.status(200).json(chatPartners);
-//   } catch (error) {
-//     console.error("Error in getChatPartners: ", error.message);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// };
