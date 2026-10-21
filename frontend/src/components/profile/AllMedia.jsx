@@ -1,6 +1,6 @@
-
 import { ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
+import MediaThumbnail from "./MediaThumbnail";
 
 const AllMedia = ({ onBack }) => {
   const { messages } = useChatStore();
@@ -32,18 +32,8 @@ const AllMedia = ({ onBack }) => {
       <div className="chatify-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
         {media.length > 0 ? (
           <div className="grid grid-cols-3 gap-2">
-            {media.map((item) => (
-              <div
-                key={item._id}
-                className="aspect-square overflow-hidden rounded-xl bg-[#F3F4FA]"
-              >
-                <img
-                  src={item.image}
-                  alt="Shared image"
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </div>
+            {media.reverse().map((item) => ( 
+              <MediaThumbnail key={item._id} imageUrl={item.image} />
             ))}
           </div>
         ) : (

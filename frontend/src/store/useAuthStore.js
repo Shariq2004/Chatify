@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -75,14 +75,31 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  deleteProfilePicture: async () => {
+    try {
+      const res = await axiosInstance.delete("/auth/profile-picture");
+
+      set({ authUser: res.data.user });
+
+      toast.success("Profile picture deleted successfully!");
+
+      return true;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to delete profile picture",
+      );
+      console.log("Delete profile picture error:", error);
+      return false;
+    }
+  },
+
   logout: async () => {
     try {
       await axiosInstance.post("/auth/logout");
       get().disconnectSocket();
-      
+
       set({ authUser: null });
       toast.success("Logged out successfully");
-
     } catch (error) {
       toast.error("Error logging out");
       console.log("Logout error:", error);

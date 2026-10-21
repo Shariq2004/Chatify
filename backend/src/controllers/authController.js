@@ -130,3 +130,47 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const deleteProfilePicture = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.profilePic) {
+      return res.status(400).json({
+        message: "No profile picture to delete",
+      });
+    }
+
+    const publicId = user.profilePic
+      .split("/upload/")[1]
+      .replace(/^v\d+\//, "")
+      .replace(/\.[^/.]+$/, "");
+
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: "image",
+    });
+
+    if (result.result !== "ok" && result.result !== "not found") {
+      return res.status(500).json({
+        message: "Failed to delete profile picture",
+      });
+    }
+
+    user.profilePic = "";
+    await user.save();
+
+    return res.status(200).json({
+      message: "Profile picture deleted successfully",
+      user: await User.findById(user._id).select("-password"),
+    });
+  } catch (error) {
+    console.log("Error deleting profile picture:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
