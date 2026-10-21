@@ -14,10 +14,19 @@ import ProfileAvatar from "../common/ProfileAvatar";
 import { useState } from "react";
 
 const ProfilePanel = () => {
-  const { authUser, updateProfile, isUpdatingProfile, onlineUsers } = useAuthStore();
+  const {
+    authUser,
+    updateProfile,
+    deleteProfilePicture,
+    isUpdatingProfile,
+    onlineUsers,
+  } = useAuthStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeletingPicture, setIsDeletingPicture] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: authUser?.fullName || "",
@@ -78,6 +87,22 @@ const ProfilePanel = () => {
     setIsEditing(false);
   };
 
+  const deleteImg = async () => {
+    setIsDeletingPicture(true);
+
+    try {
+      const success = await deleteProfilePicture();
+
+      if (success) {
+        setShowDeleteModal(false);
+      }
+    } catch (error) {
+      console.error("Delete profile picture error:", error);
+    } finally {
+      setIsDeletingPicture(false);
+    }
+  };
+
   return (
     <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
       <div className="h-19 flex items-center justify-between px-5">
@@ -94,12 +119,33 @@ const ProfilePanel = () => {
 
       <div className="chatuser-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-6">
         <div className="flex flex-col items-center">
-          <div className="relative">
-            <ProfileAvatar
-              src={selectedImg?.url || authUser?.profilePic}
-              size="h-24 w-24"
-              IconSize={40}
-            />
+          <div className="relative h-24 w-24">
+            <button
+              type="button"
+              onClick={() => {
+                if (isEditing && authUser?.profilePic) {
+                  setShowDeleteModal(true);
+                }
+              }}
+              disabled={!isEditing || !authUser?.profilePic}
+              className={`group relative h-24 w-24 overflow-hidden rounded-full ${
+                isEditing && authUser?.profilePic
+                  ? "cursor-pointer"
+                  : "cursor-default"
+              }`}
+            >
+              <ProfileAvatar
+                src={selectedImg?.url || authUser?.profilePic}
+                size="h-24 w-24"
+                IconSize={40}
+              />
+
+              {isEditing && authUser?.profilePic && (
+                <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 text-sm font-medium text-white opacity-0 transition-all duration-200 group-hover:bg-black/50 group-hover:opacity-100">
+                  Delete
+                </div>
+              )}
+            </button>
 
             {isEditing && (
               <>
@@ -113,7 +159,8 @@ const ProfilePanel = () => {
 
                 <label
                   htmlFor="profile-image"
-                  className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-[3px] border-[#FAFBFF] bg-[#7F84F7] text-white shadow-sm transition-colors duration-200 hover:bg-[#7076E8]"
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute bottom-0 right-0 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-[3px] border-[#FAFBFF] bg-[#7F84F7] text-white shadow-sm transition-colors duration-200 hover:bg-[#7076E8]"
                 >
                   <Camera size={14} strokeWidth={2} />
                 </label>
@@ -277,6 +324,48 @@ const ProfilePanel = () => {
           </button>
         )}
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4">
+          <div className="w-full max-w-sm rounded-2xl border border-[#E6E8F2] bg-[#FAFBFF] p-5 shadow-xl">
+            <h3 className="mt-4 text-base font-semibold text-[#3F4354]">
+              Delete Profile Picture?
+            </h3>
+
+            <p className="mt-2 text-sm leading-5 text-[#737891]">
+              Are you sure you want to delete your profile picture? This action
+              cannot be undone.
+            </p>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeletingPicture}
+                className="h-10 flex-1 rounded-xl border border-[#E6E8F2] text-sm font-medium text-[#555B70] hover:bg-[#F1F3F9] cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                disabled={isDeletingPicture}
+                onClick={deleteImg}
+                className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              >
+                {isDeletingPicture ? (
+                  <>
+                    <LoaderCircle size={15} className="animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

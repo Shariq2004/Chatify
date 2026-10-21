@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search, Plus, Volume2, VolumeX, X } from "lucide-react";
+import { Plus, Volume2, VolumeX, X, Check } from "lucide-react";
 import ChatFilters from "./ChatFilters";
 import ChatItem from "./ChatItem";
 import NoChatsFound from "./NoChatsFound";
@@ -29,30 +29,32 @@ const ChatListPanel = () => {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
 
+  const isSearchActive = search.trim().length > 0;
+  const isUnreadFilter = activeFilter === "Unread";
+
   const filteredChats = chats.filter((chat) => {
-  const matchesSearch = chat.fullName
-    ?.toLowerCase()
-    .includes(search.toLowerCase());
+    const matchesSearch = chat.fullName
+      ?.toLowerCase()
+      .includes(search.toLowerCase());
 
-  const matchesFilter =
-    activeFilter === "All" || chat.unreadCount > 0;
+    const matchesFilter = activeFilter === "All" || chat.unreadCount > 0;
 
-  return matchesSearch && matchesFilter;
-});
+    return matchesSearch && matchesFilter;
+  });
 
   useEffect(() => {
     getMyChats();
   }, [getMyChats]);
 
   useEffect(() => {
-  if (!socket) return;
+    if (!socket) return;
 
-  listenForMessages();
+    listenForMessages();
 
-  return () => {
-    stopListeningToMessages();
-  };
-}, [socket, listenForMessages, stopListeningToMessages]);
+    return () => {
+      stopListeningToMessages();
+    };
+  }, [socket, listenForMessages, stopListeningToMessages]);
 
   return (
     <section className="flex h-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
@@ -93,7 +95,10 @@ const ChatListPanel = () => {
       />
 
       <div className="flex shrink-0 items-center justify-between px-4 py-3">
-        <ChatFilters activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+        <ChatFilters
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
 
         <button
           type="button"
@@ -114,8 +119,28 @@ const ChatListPanel = () => {
         ) : chats.length === 0 ? (
           <NoChatsFound onViewContacts={() => setIsActiveTab("Contacts")} />
         ) : filteredChats.length === 0 ? (
-          <div className="flex h-full items-center justify-center px-4 text-center text-base text-slate-400">
-            No conversations found
+          <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+            {isUnreadFilter && !isSearchActive && (
+              <div className="mb-4 flex h-13 w-13 items-center justify-center rounded-full border border-[#E6E8F2] bg-[#F0F1FF]">
+                <Check size={27} strokeWidth={3} className="text-[#7F84F7]" />
+              </div>
+            )}
+
+            <h3 className="text-base font-semibold text-slate-700">
+              {isSearchActive
+                ? "No conversations found"
+                : isUnreadFilter
+                  ? "You're all caught up!"
+                  : "No conversations found"}
+            </h3>
+
+            <p className="mt-1.5 max-w-58 text-xs leading-5 text-slate-400">
+              {isSearchActive
+                ? "Try searching for another name to find your conversations."
+                : isUnreadFilter
+                  ? "There are no unread messages waiting for you."
+                  : "Your conversations will appear here."}
+            </p>
           </div>
         ) : (
           <div className="flex flex-col gap-1 px-2">
@@ -124,7 +149,7 @@ const ChatListPanel = () => {
                 key={chat._id}
                 id={chat._id}
                 name={chat.fullName}
-                message={chat.lastMessage} 
+                message={chat.lastMessage}
                 time={formatChatListTime(chat.lastMessageTime)}
                 avatar={chat.profilePic}
                 unread={chat.unreadCount}

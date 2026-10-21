@@ -11,6 +11,7 @@ import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import UserAvatar from "../common/UserAvatar";
 import AllMedia from "./AllMedia";
+import MediaThumbnail from "./MediaThumbnail";
 
 const ProfilePanel = () => {
   const { isProfileOpen, toggleProfile, selectedUser, messages } = useChatStore();
@@ -154,18 +155,8 @@ const ProfilePanel = () => {
 
               {media.length > 0 ? (
                 <div className="grid grid-cols-3 gap-2">
-                  {media.slice(0, 3).map((item) => (
-                    <div
-                      key={item._id}
-                      className="group aspect-square overflow-hidden rounded-[10px] bg-[#F3F4FA]"
-                    >
-                      <img
-                        src={item.image}
-                        alt="Shared image"
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
+                  {media.slice(-3).reverse().map((item) => (
+                    <MediaThumbnail key={item._id} imageUrl={item.image} />
                   ))}
                 </div>
               ) : (

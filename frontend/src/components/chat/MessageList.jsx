@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, MoreHorizontal } from "lucide-react";
+import { Check, MoreHorizontal, Image as ImageIcon } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import ScrollToBottomButton from "./ScrollToBottomButton";
@@ -48,8 +48,7 @@ const MessageList = () => {
 
     return (
       Math.abs(secondTime - firstTime) < 60 * 1000 &&
-      new Date(firstTime).toDateString() ===
-        new Date(secondTime).toDateString()
+      new Date(firstTime).toDateString() === new Date(secondTime).toDateString()
     );
   };
 
@@ -76,9 +75,7 @@ const MessageList = () => {
 
     const handleScroll = () => {
       const distanceFromBottom =
-        container.scrollHeight -
-        container.scrollTop -
-        container.clientHeight;
+        container.scrollHeight - container.scrollTop - container.clientHeight;
 
       setShowScrollButton(distanceFromBottom > 100);
     };
@@ -102,9 +99,7 @@ const MessageList = () => {
             const previousMessage = messages[index - 1];
             const nextMessage = messages[index + 1];
 
-            const currentDate = new Date(
-              message.createdAt,
-            ).toDateString();
+            const currentDate = new Date(message.createdAt).toDateString();
 
             const previousDate = previousMessage
               ? new Date(previousMessage.createdAt).toDateString()
@@ -112,8 +107,7 @@ const MessageList = () => {
 
             const showDateSeparator = currentDate !== previousDate;
 
-            const isSent =
-              getSenderId(message) === String(authUser?._id);
+            const isSent = getSenderId(message) === String(authUser?._id);
 
             // Show avatar once for consecutive messages
             // from the same sender within one minute.
@@ -122,10 +116,7 @@ const MessageList = () => {
               message,
             );
 
-            const isWithinNext = areWithinOneMinute(
-              message,
-              nextMessage,
-            );
+            const isWithinNext = areWithinOneMinute(message, nextMessage);
 
             const showAvatar = !isSent && !isWithinPrevious;
             const showTime = !isWithinNext;
@@ -133,9 +124,7 @@ const MessageList = () => {
             const imageUrl =
               typeof message.image === "string"
                 ? message.image
-                : message.image?.secure_url ||
-                  message.image?.url ||
-                  "";
+                : message.image?.secure_url || message.image?.url || "";
 
             return (
               <div key={message._id}>
@@ -195,17 +184,37 @@ const MessageList = () => {
                         }`}
                       >
                         {imageUrl && (
-                          <img
-                            src={imageUrl}
-                            alt="Message attachment"
-                            className="block max-h-[280px] max-w-full rounded-lg object-contain"
-                            onError={() =>
-                              console.error(
-                                "Message image failed to load:",
-                                imageUrl,
-                              )
-                            }
-                          />
+                          <div className="relative overflow-hidden rounded-lg">
+                            {message.isUploading && (
+                              <div className="relative flex h-48 w-64 max-w-full items-center justify-center overflow-hidden rounded-xl border border-[#E5E7F2] bg-linear-to-br from-[#F0F1FA] via-[#E8EBF6] to-[#F3F0FF]">
+                                <div className="absolute inset-0 animate-pulse bg-linear-to-br from-white/40 via-transparent to-[#DCDFFF]/30" />
+
+                                <div className="relative flex flex-col items-center gap-2">
+                                  <div className="flex h-12 w-12 animate-[pulse_1.8s_ease-in-out_infinite] items-center justify-center rounded-2xl border border-white/80 bg-white/70 text-[#8589D8] shadow-sm backdrop-blur-sm">
+                                    <ImageIcon size={23} strokeWidth={1.7} />
+                                  </div>
+
+                                  <span className="text-xs font-medium tracking-wide text-[#8589D8]">
+                                    Loading image...
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+
+                            {!message.isUploading && (
+                              <img
+                                src={imageUrl}
+                                alt="Message attachment"
+                                className="block max-h-70 max-w-full rounded-lg object-contain"
+                                onError={() => {
+                                  console.error(
+                                    "Message image failed to load:",
+                                    imageUrl,
+                                  );
+                                }}
+                              />
+                            )}
+                          </div>
                         )}
 
                         {message.text && (
@@ -269,10 +278,7 @@ const MessageList = () => {
         </div>
       </div>
 
-      <ScrollToBottomButton
-        show={showScrollButton}
-        onClick={scrollToBottom}
-      />
+      <ScrollToBottomButton show={showScrollButton} onClick={scrollToBottom} />
     </div>
   );
 };

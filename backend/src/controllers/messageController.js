@@ -31,7 +31,7 @@ export const getMessagesByUserId = async (req, res) => {
 
     if (unreadMessages.length > 0) {
       const messageIds = unreadMessages.map((message) =>
-        message._id.toString()
+        message._id.toString(),
       );
 
       await Message.updateMany(
@@ -43,12 +43,10 @@ export const getMessagesByUserId = async (req, res) => {
         },
         {
           $set: { isRead: true },
-        }
+        },
       );
 
-      const senderSocketId = getReceiverSocketId(
-        userToChatId.toString()
-      );
+      const senderSocketId = getReceiverSocketId(userToChatId.toString());
 
       if (senderSocketId) {
         io.to(senderSocketId).emit("messagesRead", {
@@ -63,7 +61,9 @@ export const getMessagesByUserId = async (req, res) => {
         { senderId: myId, receiverId: userToChatId },
         { senderId: userToChatId, receiverId: myId },
       ],
-    }).populate("senderId", "fullName profilePic").sort({ createdAt: 1 });
+    })
+      .populate("senderId", "fullName profilePic")
+      .sort({ createdAt: 1 });
 
     res.status(200).json(messages);
   } catch (error) {
@@ -122,7 +122,10 @@ export const sendMessage = async (req, res) => {
 
     // res.status(201).json(newMessage);
 
-    const populatedMessage = await Message.findById(newMessage._id).populate("senderId", "fullName profilePic", );
+    const populatedMessage = await Message.findById(newMessage._id).populate(
+      "senderId",
+      "fullName profilePic",
+    );
 
     const receiverSocketId = getReceiverSocketId(receiverId);
 

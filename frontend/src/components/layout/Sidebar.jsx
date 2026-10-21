@@ -25,6 +25,7 @@ const Sidebar = () => {
     isActiveTab,
     setIsActiveTab,
     resetChatStoreState,
+    chats,
   } = useChatStore();
 
   const navItems = [
@@ -41,6 +42,8 @@ const Sidebar = () => {
       icon: UsersRound,
     },
   ];
+
+  const hasUnreadMessages = chats.some((chat) => chat.unreadCount > 0);
 
   const handleLogout = async () => {
     const success = await logout();
@@ -121,7 +124,7 @@ const Sidebar = () => {
                   </span>
                 )}
 
-                {item.label === "Notifications" && (
+                {hasUnreadMessages && item.label === "Chats" && (
                   <span
                     className={`h-2 w-2 rounded-full bg-[#7F84F7] ${
                       isSidebarOpen
@@ -131,17 +134,6 @@ const Sidebar = () => {
                   />
                 )}
 
-                {!isRead && !(item.label === "Notifications") && (
-                  <span
-                    className={`flex items-center justify-center rounded-full bg-linear-to-br from-[#8184e8] via-[#7E84F1] to-[#6056e8]  text-[10px] font-semibold text-white ${
-                      isSidebarOpen
-                        ? "h-5 w-5 ml-auto mr-0.5"
-                        : "absolute top-1 right-2.5 h-4 w-4"
-                    }`}
-                  >
-                    3
-                  </span>
-                )}
               </button>
             );
           })}
