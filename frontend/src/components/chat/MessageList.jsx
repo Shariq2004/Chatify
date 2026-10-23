@@ -137,9 +137,7 @@ const MessageList = () => {
                 )}
 
                 <div
-                  className={`group flex items-end gap-2 ${
-                    isSent ? "justify-end" : "justify-start"
-                  } ${isWithinPrevious ? "mt-1" : "mt-4"}`}
+                  className={`group flex items-end gap-2 ${isSent ? "justify-end" : "justify-start"} ${isWithinPrevious ? "mt-0.5 sm:mt-1" : "mt-2.5 sm:mt-4"}`}
                 >
                   {!isSent && (
                     <div className="w-7 shrink-0">
@@ -175,16 +173,16 @@ const MessageList = () => {
                       )}
 
                       <div
-                        className={`min-w-0 rounded-[17px] px-4 ${
-                          imageUrl ? "py-3" : "py-2.5"
-                        } text-[14px] leading-6 shadow-sm ${
+                        className={`min-w-0 max-w-full overflow-hidden rounded-xl sm:rounded-[17px] ${
+                          imageUrl ? "p-1.5" : "px-2.5 sm:px-4 py-2 sm:py-2.5"
+                        } text-[14px]  ${
                           isSent
                             ? "bg-[#7F84F7] text-white"
                             : "border border-[#E7E9F2] bg-white text-[#3F4354]"
                         }`}
                       >
                         {imageUrl && (
-                          <div className="relative overflow-hidden rounded-lg">
+                          <div className="relative w-full min-w-0 overflow-hidden rounded-lg">
                             {message.isUploading && (
                               <div className="relative flex h-48 w-64 max-w-full items-center justify-center overflow-hidden rounded-xl border border-[#E5E7F2] bg-linear-to-br from-[#F0F1FA] via-[#E8EBF6] to-[#F3F0FF]">
                                 <div className="absolute inset-0 animate-pulse bg-linear-to-br from-white/40 via-transparent to-[#DCDFFF]/30" />
@@ -205,7 +203,7 @@ const MessageList = () => {
                               <img
                                 src={imageUrl}
                                 alt="Message attachment"
-                                className="block max-h-70 max-w-full rounded-lg object-contain"
+                                className="block h-auto max-h-70 max-w-full rounded-lg sm:rounded-[15px] object-contain"
                                 onError={() => {
                                   console.error(
                                     "Message image failed to load:",
@@ -218,7 +216,11 @@ const MessageList = () => {
                         )}
 
                         {message.text && (
-                          <div className={imageUrl ? "mt-2" : ""}>
+                          <div
+                            className={`text-[12px] sm:text-sm ${
+                              imageUrl ? "px-1 py-1.5 sm:px-1.5 sm:py-2" : ""
+                            }`}
+                          >
                             {message.text}
                           </div>
                         )}

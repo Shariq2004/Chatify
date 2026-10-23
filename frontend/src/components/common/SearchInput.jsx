@@ -6,8 +6,8 @@ const SearchInput = ({
   placeholder = "Search...",
 }) => {
   return (
-    <div className="shrink-0 px-4">
-      <div className="group flex h-10 items-center gap-3 rounded-full border border-slate-200/80 bg-[#7F84F7]/5 px-3 transition-all duration-200 focus-within:border-[#7F84F7] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#7F84F7]/10">
+    <div className="shrink-0 px-4 pb-3">
+      <div className="group flex h-11 sm:h-10 items-center gap-3 rounded-full border border-slate-200/80 bg-[#7F84F7]/5 px-3 transition-all duration-200 focus-within:border-[#7F84F7] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#7F84F7]/10">
         <Search
           size={18}
           strokeWidth={2}

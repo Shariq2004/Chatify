@@ -4,7 +4,7 @@ const ChatFilters = ({ activeFilter, onFilterChange }) => {
       <button
         type="button"
         onClick={() => onFilterChange("All")}
-        className={`shrink-0 cursor-pointer rounded-full px-4 py-2 text-xs transition-colors duration-200 ${
+        className={`shrink-0 cursor-pointer rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs transition-colors duration-200 ${
           activeFilter === "All"
             ? "bg-[#7F84F7] font-semibold text-white shadow-sm shadow-[#7F84F7]/20"
             : "bg-slate-50 font-medium text-slate-500 hover:bg-[#7F84F7]/10 hover:text-[#6F75E8] border border-slate-200"
@@ -16,7 +16,7 @@ const ChatFilters = ({ activeFilter, onFilterChange }) => {
       <button
         type="button"
         onClick={() => onFilterChange("Unread")}
-        className={`shrink-0 cursor-pointer rounded-full px-4 py-2 text-xs transition-colors duration-200 ${
+        className={`shrink-0 cursor-pointer rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs transition-colors duration-200 ${
           activeFilter === "Unread"
             ? "bg-[#7F84F7] font-semibold text-white shadow-sm shadow-[#7F84F7]/20"
             : "bg-slate-50 font-medium text-slate-500 hover:bg-[#7F84F7]/10 hover:text-[#6F75E8] border border-slate-200"

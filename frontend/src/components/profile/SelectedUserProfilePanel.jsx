@@ -14,10 +14,13 @@ import AllMedia from "./AllMedia";
 import MediaThumbnail from "./MediaThumbnail";
 
 const ProfilePanel = () => {
-  const { isProfileOpen, toggleProfile, selectedUser, messages } = useChatStore();
+  const { isProfileOpen, toggleProfile, selectedUser, messages } =
+    useChatStore();
   const { onlineUsers } = useAuthStore();
-  
-  const isOnline = selectedUser?._id ? onlineUsers.includes(selectedUser._id) : false;
+
+  const isOnline = selectedUser?._id
+    ? onlineUsers.includes(selectedUser._id)
+    : false;
 
   const [showAllMedia, setShowAllMedia] = useState(false);
 
@@ -25,9 +28,7 @@ const ProfilePanel = () => {
 
   return (
     <aside
-      className={`flex h-full shrink-0 flex-col overflow-hidden border-l border-[#E7E9F2] bg-white transition-[width] duration-300 ease-in-out ${
-        isProfileOpen ? "w-85" : "w-0"
-      }`}
+      className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-l border-[#E7E9F2] bg-white transition-transform duration-300 ease-in-out ${isProfileOpen ? "translate-x-0" : "translate-x-full"} 2xl:relative 2xl:inset-auto 2xl:z-auto 2xl:translate-x-0 2xl:transition-[width] ${isProfileOpen ? "2xl:w-85" : "2xl:w-0"}`}
     >
       {showAllMedia ? (
         <AllMedia onBack={() => setShowAllMedia(false)} />
@@ -155,9 +156,12 @@ const ProfilePanel = () => {
 
               {media.length > 0 ? (
                 <div className="grid grid-cols-3 gap-2">
-                  {media.slice(-3).reverse().map((item) => (
-                    <MediaThumbnail key={item._id} imageUrl={item.image} />
-                  ))}
+                  {media
+                    .slice(-3)
+                    .reverse()
+                    .map((item) => (
+                      <MediaThumbnail key={item._id} imageUrl={item.image} />
+                    ))}
                 </div>
               ) : (
                 <div className="flex flex-col items-center rounded-xl bg-[#F8F9FE] px-4 py-6 text-center">

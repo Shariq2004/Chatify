@@ -57,8 +57,8 @@ const ChatListPanel = () => {
   }, [socket, listenForMessages, stopListeningToMessages]);
 
   return (
-    <section className="flex h-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
-      <div className="flex h-19 shrink-0 items-center justify-between px-5">
+    <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
+      <div className="flex h-15 md:h-19 shrink-0 items-center justify-between px-5">
         <h2 className="text-xl font-semibold tracking-tight text-slate-800">
           Chats
         </h2>
@@ -103,9 +103,9 @@ const ChatListPanel = () => {
         <button
           type="button"
           onClick={() => setIsActiveTab("Contacts")}
-          className="ml-3 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#7F84F7] text-white shadow-sm transition-all duration-200 hover:bg-[#7076E8] hover:shadow-md active:scale-95"
+          className="fixed bottom-20 right-4 z-30 flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#7F84F7] text-white shadow-lg shadow-[#7F84F7]/25 transition-all duration-200 hover:bg-[#7076E8] active:scale-95 md:static md:ml-3 md:h-9 md:w-9 md:rounded-xl md:shadow-sm"
         >
-          <Plus size={19} strokeWidth={2.3} />
+          <Plus size={22} strokeWidth={2.3} />
         </button>
       </div>
 
@@ -134,7 +134,7 @@ const ChatListPanel = () => {
                   : "No conversations found"}
             </h3>
 
-            <p className="mt-1.5 max-w-58 text-xs leading-5 text-slate-400">
+            <p className="mt-1.5 max-w-58 text-sm leading-5 text-slate-400">
               {isSearchActive
                 ? "Try searching for another name to find your conversations."
                 : isUnreadFilter

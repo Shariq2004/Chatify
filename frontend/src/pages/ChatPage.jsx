@@ -11,13 +11,15 @@ const ChatPage = () => {
   const { isActiveTab, selectedUser, isSidebarOpen } = useChatStore();
 
   return (
-    <div className="h-screen flex overflow-hidden bg-[#F5F6FC]">
+    <div className="flex h-dvh w-full overflow-hidden bg-[#F5F6FC]">
       <Sidebar />
 
       <div
-        className={`h-full shrink-0 overflow-hidden transition-all duration-300 ${
-          isSidebarOpen ? "w-100" : "w-110"
-        }`}
+        className={`
+          h-full shrink-0 overflow-hidden transition-all duration-300
+          ${selectedUser ? "hidden md:block" : "flex w-full  pb-16 sm:pb-0"}
+          ${isSidebarOpen ? "md:w-70 lg:w-90 xl:w-90" : "md:w-70 lg:w-100 xl:w-110"}
+        `}
       >
         {isActiveTab === "Chats" && <ChatListPanel />}
         {isActiveTab === "Contacts" && <ContactListPanel />}
@@ -25,7 +27,11 @@ const ChatPage = () => {
         {isActiveTab === "Profile" && <ProfilePanel />}
       </div>
 
-      {selectedUser ? <ChatWindow /> : <NoConversationPlaceholder />}
+      <div
+        className={`h-full min-w-0 flex-1 ${selectedUser ? "flex" : "hidden md:flex"}`}
+      >
+        {selectedUser ? <ChatWindow /> : <NoConversationPlaceholder />}
+      </div>
     </div>
   );
 };
