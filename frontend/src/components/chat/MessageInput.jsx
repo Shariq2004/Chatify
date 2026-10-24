@@ -10,14 +10,14 @@ const MessageInput = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const fileInputRef = useRef(null);
 
-  const { sendMessage, isSoundEnabled } = useChatStore();
+  const { sendMessage, isSoundEnabled, isKeypressSoundEnabled } = useChatStore();
 
   const handleSendMessage = (e) => {
     e.preventDefault();
 
     if (!text.trim() && !selectedImage) return;
 
-    if (isSoundEnabled) playRandomKeyStrokeSound();
+    if (isKeypressSoundEnabled) playRandomKeyStrokeSound();
 
     sendMessage({
       text: text.trim(),
@@ -127,7 +127,7 @@ const MessageInput = () => {
             onChange={(event) => {
               setText(event.target.value);
 
-              if (isSoundEnabled) {
+              if (isKeypressSoundEnabled) {
                 playRandomKeyStrokeSound();
               }
             }}

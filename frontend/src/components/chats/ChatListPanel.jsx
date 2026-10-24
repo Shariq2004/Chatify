@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { Plus, Volume2, VolumeX, X, Check } from "lucide-react";
+import {
+  Plus,
+  Volume2,
+  VolumeX,
+  X,
+  Check,
+  MoreVertical,
+  UserRound,
+  LogOut,
+} from "lucide-react";
 import ChatFilters from "./ChatFilters";
 import ChatItem from "./ChatItem";
 import NoChatsFound from "./NoChatsFound";
@@ -14,8 +23,6 @@ const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
 const ChatListPanel = () => {
   const {
     chats,
-    isSoundEnabled,
-    toggleSound,
     setIsActiveTab,
     isUsersLoading,
     selectedUser,
@@ -24,10 +31,11 @@ const ChatListPanel = () => {
     listenForMessages,
     stopListeningToMessages,
   } = useChatStore();
-  const { socket } = useAuthStore();
+  const { socket, logout } = useAuthStore();
 
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isSearchActive = search.trim().length > 0;
   const isUnreadFilter = activeFilter === "Unread";
@@ -41,6 +49,8 @@ const ChatListPanel = () => {
 
     return matchesSearch && matchesFilter;
   });
+
+  const unreadCount = chats.reduce((total, chat) => total + (chat.unreadCount || 0), 0,);
 
   useEffect(() => {
     getMyChats();
@@ -58,33 +68,47 @@ const ChatListPanel = () => {
 
   return (
     <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
-      <div className="flex h-15 md:h-19 shrink-0 items-center justify-between px-5">
+      <div className="flex h-15 shrink-0 items-center justify-between px-5 md:h-19">
         <h2 className="text-xl font-semibold tracking-tight text-slate-800">
           Chats
         </h2>
 
-        <div className="flex items-center gap-2">
+        <div className="relative">
           <button
             type="button"
-            onClick={() => {
-              mouseClickSound.currentTime = 0;
-              mouseClickSound
-                .play()
-                .catch((error) => console.log("Audio play failed:", error));
-              toggleSound();
-            }}
-            className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-all duration-200 ${
-              isSoundEnabled
-                ? "text-[#7F84F7] hover:bg-[#7F84F7]/10 hover:text-[#7076E8]"
-                : "text-slate-400 hover:bg-slate-100 hover:text-slate-500"
-            }`}
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-[#7F84F7]/10 hover:text-[#7F84F7]"
           >
-            {isSoundEnabled ? (
-              <Volume2 size={21} strokeWidth={2.2} />
-            ) : (
-              <VolumeX size={21} strokeWidth={2.2} />
-            )}
+            <MoreVertical size={21} strokeWidth={2.2} />
           </button>
+
+          {isMenuOpen && (
+            <div className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-[#E6E8F2] bg-white p-1.5 shadow-lg shadow-slate-200/50">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsActiveTab("Profile");
+                }}
+                className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#3F4354] transition-colors hover:bg-[#F5F5FF] hover:text-[#7F84F7]"
+              >
+                <UserRound size={17} />
+                <span>Profile</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  logout();
+                }}
+                className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-rose-500 transition-colors hover:bg-rose-50"
+              >
+                <LogOut size={17} />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -98,6 +122,7 @@ const ChatListPanel = () => {
         <ChatFilters
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
+          unreadCount={unreadCount}
         />
 
         <button

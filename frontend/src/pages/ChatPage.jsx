@@ -6,6 +6,7 @@ import ProfilePanel from "../components/profile/ProfilePanel";
 import ChatWindow from "../components/chat/ChatWindow";
 import NoConversationPlaceholder from "../components/chat/NoConversationPlaceholder";
 import { useChatStore } from "../store/useChatStore";
+import Settings from "../components/settings/Settings";
 
 const ChatPage = () => {
   const { isActiveTab, selectedUser, isSidebarOpen } = useChatStore();
@@ -24,6 +25,7 @@ const ChatPage = () => {
         {isActiveTab === "Chats" && <ChatListPanel />}
         {isActiveTab === "Contacts" && <ContactListPanel />}
         {isActiveTab === "Notifications" && <NotificationList />}
+        {isActiveTab === "Settings" && <Settings />}
         {isActiveTab === "Profile" && <ProfilePanel />}
       </div>
 

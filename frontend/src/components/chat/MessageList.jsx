@@ -92,7 +92,7 @@ const MessageList = () => {
     <div className="relative min-h-0 flex-1">
       <div
         ref={scrollContainerRef}
-        className="chatify-scrollbar h-full overflow-y-auto bg-[#F3F4FA] px-6 py-4"
+        className="chatify-scrollbar h-full overflow-y-auto bg-[#F3F4FA] px-3 md:px-6 py-4"
       >
         <div className="flex w-full flex-col">
           {messages.map((message, index) => {
