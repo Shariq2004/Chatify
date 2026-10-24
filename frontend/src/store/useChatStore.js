@@ -17,7 +17,11 @@ export const useChatStore = create((set, get) => ({
   isUsersLoading: false,
   isMessagesLoading: false,
 
-  isSoundEnabled: localStorage.getItem("isSoundEnabled") === "true",
+  isNotificationEnabled:
+    localStorage.getItem("isNotificationEnabled") !== "false",
+
+  isKeypressSoundEnabled:
+    localStorage.getItem("isKeypressSoundEnabled") !== "false",
 
   resetChatStoreState: () => {
     set({
@@ -33,10 +37,16 @@ export const useChatStore = create((set, get) => ({
     });
   },
 
-  toggleSound: () => {
-    const newValue = !get().isSoundEnabled;
-    localStorage.setItem("isSoundEnabled", newValue);
-    set({ isSoundEnabled: newValue });
+  toggleNotificationSound: () => {
+    const newValue = !get().isNotificationEnabled;
+    localStorage.setItem("isNotificationEnabled", String(newValue));
+    set({ isNotificationEnabled: newValue });
+  },
+
+  toggleKeypressSound: () => {
+    const newValue = !get().isKeypressSoundEnabled;
+    localStorage.setItem("isKeypressSoundEnabled", String(newValue));
+    set({ isKeypressSoundEnabled: newValue });
   },
 
   toggleSidebar: () =>
@@ -160,7 +170,11 @@ export const useChatStore = create((set, get) => ({
     socket.off("messagesRead");
 
     const handleNewMessage = (newMessage) => {
-      const { selectedUser, isSoundEnabled, isActiveTab } = get();
+      const {
+        selectedUser,
+        isNotificationEnabled,
+        isActiveTab,
+      } = get();
 
       const currentUserId = String(useAuthStore.getState().authUser?._id);
 
@@ -240,7 +254,7 @@ export const useChatStore = create((set, get) => ({
         socket.emit("markMessagesRead", { senderId });
       }
 
-      if (isIncoming && isSoundEnabled) {
+      if (isIncoming && isNotificationEnabled) {
         const notificationSound = new Audio("/sounds/notification.mp3");
 
         notificationSound.play().catch((error) => {
