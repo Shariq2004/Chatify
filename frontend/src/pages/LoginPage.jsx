@@ -9,6 +9,7 @@ import {
   MessageCircleMore,
   LockKeyhole,
   LoaderCircle,
+  ArrowLeft,
 } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import ChatifyImg from "../assets/chatify-auth.png";
@@ -36,10 +37,26 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-indigo-100/80 px-2 py-2 sm:px-6 sm:py-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-287 flex-col overflow-hidden rounded-[28px] border border-[#E8EBF6] bg-[#F8F9FF] shadow-[0_25px_70px_rgba(60,70,120,0.12)] lg:flex-row">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F2F3FC] px-2 py-2 sm:px-6 sm:py-6 lg:px-8">
+      <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-[#A5A9FF]/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-36 -right-24 h-96 w-96 rounded-full bg-[#C7A9FF]/20 blur-3xl" />
+      <Link
+        to="/"
+        className="absolute z-20 text-sm items-center gap-2 font-medium text-[#626987] transition-all duration-200 hover:text-[#7F84F7] left-8 top-9 hidden 2xl:inline-flex"
+      >
+        <ArrowLeft size={20} />
+        <span className="hidden sm:flex">Home</span>
+      </Link>
+      <div className="mx-auto flex w-full max-w-287 flex-col overflow-hidden rounded-[28px] border border-[#E8EBF6] bg-[#F8F9FF] shadow-[0_25px_70px_rgba(60,70,120,0.12)] lg:flex-row z-10">
         {/* LEFT SIDE */}
         <div className="relative flex w-full flex-col overflow-hidden bg-white px-6 pb-4 pt-6 sm:px-10 sm:pt-7 lg:w-[55%] lg:px-10 lg:py-7">
+          <Link
+            to="/"
+            className="absolute left-6 top-6 z-20 inline-flex 2xl:hidden items-center gap-2 text-sm font-medium text-[#626987] transition-colors duration-200 hover:text-[#7F84F7]"
+          >
+            <ArrowLeft size={20} />
+            <span className="hidden sm:flex">Home</span>
+          </Link>
           <div className="relative flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-[#7F84F7] shadow-md shadow-[#7F84F7]/20">
