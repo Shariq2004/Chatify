@@ -1,31 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
-body {
-  font-family: "Inter", sans-serif;
-}
-
-.chatify-scrollbar {
+html {
+  scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: #d8daea transparent;
 }
 
-.chatify-scrollbar::-webkit-scrollbar {
+body {
+  font-family: "Inter", sans-serif;
+}
+
+html::-webkit-scrollbar {
   width: 3px;
 }
 
-.chatify-scrollbar::-webkit-scrollbar-track {
+html::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.chatify-scrollbar::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb {
   background: #d8daea;
   border-radius: 999px;
   border: 1px solid transparent;
   background-clip: padding-box;
 }
 
-.chatify-scrollbar::-webkit-scrollbar-thumb:hover {
+html::-webkit-scrollbar-thumb:hover {
   background: #9da1df;
 }
 
