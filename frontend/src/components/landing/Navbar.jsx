@@ -101,8 +101,6 @@ const Navbar = () => {
 
           {/* Mobile Navigation */}
           <div
-            id="mobile-navigation"
-            aria-hidden={!isMenuOpen}
             className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-in-out lg:hidden ${
               isMenuOpen
                 ? "mt-4 grid-rows-[1fr] opacity-100"
@@ -117,7 +115,6 @@ const Navbar = () => {
                       key={link.label}
                       href={link.href}
                       onClick={closeMenu}
-                      tabIndex={isMenuOpen ? 0 : -1}
                       className="rounded-xl px-3.5 py-3 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-[#EEEFFF] hover:text-[#7076E8]"
                     >
                       {link.label}
@@ -129,7 +126,6 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={closeMenu}
-                    tabIndex={isMenuOpen ? 0 : -1}
                     className="rounded-xl px-4 py-3 text-center text-sm font-semibold text-slate-700 transition-colors duration-200 hover:bg-[#EEEFFF]"
                   >
                     Log in
@@ -138,7 +134,6 @@ const Navbar = () => {
                   <Link
                     to="/signup"
                     onClick={closeMenu}
-                    tabIndex={isMenuOpen ? 0 : -1}
                     className="rounded-xl bg-[#7F84F7] px-4 py-3 text-center text-sm font-semibold text-white shadow-md shadow-[#7F84F7]/15 transition-colors duration-200 hover:bg-[#7076E8]"
                   >
                     Get Started
