@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import ChatPage from "./pages/ChatPage";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
+import NotFound from "./pages/NotFound";
 import { useAuthStore } from "./store/useAuthStore";
 import PageLoader from "./components/common/PageLoader";
 import { Toaster } from 'react-hot-toast';
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/chat" element={authUser ? <ChatPage /> : <Navigate to={"/login"} />} />
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/chat"} />}/>
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to={"/chat"} />}/>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster position="top-right" />
     </div>
