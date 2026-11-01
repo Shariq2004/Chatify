@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
 
-const MediaThumbnail = ({ imageUrl }) => {
+const MediaThumbnail = ({ imageUrl, rounded="rounded-[10px]" }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div className="group relative aspect-square overflow-hidden rounded-[10px] bg-[#F3F4FA]">
+    <div className={`group relative aspect-square overflow-hidden ${rounded} bg-[#F3F4FA]`}>
       {isLoading && !hasError && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-linear-to-br from-[#F0F1FA] via-[#E8EBF6] to-[#F3F0FF]">
           <div className="absolute inset-0 animate-pulse bg-linear-to-br from-white/40 via-transparent to-[#DCDFFF]/30" />

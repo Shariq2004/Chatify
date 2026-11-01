@@ -11,23 +11,27 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-html::-webkit-scrollbar {
-  width: 3px;
+*::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
 }
 
-html::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
 
-html::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #d8daea;
   border-radius: 999px;
-  border: 1px solid transparent;
-  background-clip: padding-box;
 }
 
-html::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
   background: #9da1df;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d8daea transparent;
 }
 
 .chatuser-scrollbar {

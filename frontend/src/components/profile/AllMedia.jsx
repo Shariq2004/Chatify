@@ -31,9 +31,9 @@ const AllMedia = ({ onBack }) => {
 
       <div className="chatify-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
         {media.length > 0 ? (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-1">
             {media.reverse().map((item) => ( 
-              <MediaThumbnail key={item._id} imageUrl={item.image} />
+              <MediaThumbnail key={item._id} imageUrl={item.image} rounded="rounded-none" />
             ))}
           </div>
         ) : (

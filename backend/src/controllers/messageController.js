@@ -184,7 +184,7 @@ export const getChatPartners = async (req, res) => {
 
       return {
         ...partner.toObject(),
-        lastMessage: lastMessage?.text || "",
+        lastMessage: lastMessage?.text || (lastMessage?.image ? "Photo" : ""),
         lastMessageTime: lastMessage?.createdAt || null,
         unreadCount,
       };

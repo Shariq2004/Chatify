@@ -19,7 +19,7 @@ const ChatHeader = () => {
           type="button"
           onClick={() => setSelectedUser(null)}
           aria-label="Back to chats"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-[#EDEEFC] hover:text-[#7F84F7] md:hidden"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-[#EDEEFC] hover:text-[#7F84F7] md:hidden cursor-pointer"
         >
           <ArrowLeft size={21} />
         </button>

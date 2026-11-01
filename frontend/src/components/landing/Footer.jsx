@@ -44,7 +44,7 @@ const Footer = () => {
 
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://github.com/"
+                href="https://github.com/Shariq2004"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="GitHub"
@@ -54,7 +54,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://linkedin.com/"
+                href="https://www.linkedin.com/in/shariq786/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn"

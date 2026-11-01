@@ -50,7 +50,7 @@ const AppPreview = () => {
 
           <div className="overflow-hidden">
             <img
-              src="/hero-img.png"
+              src="/chatify-preview.png"
               alt="Chatify messaging application preview showing its chat interface"
               loading="lazy"
               className="block h-auto w-full object-contain"

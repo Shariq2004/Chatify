@@ -6,7 +6,7 @@ const avatarColors = [
   { range: ["S", "T", "U", "V", "W", "X", "Y", "Z"], bg: "bg-[#F0E2FF]", text: "text-[#763BA8]" },
 ];
 
-const Avatar = ({ src, name = "User", size = "h-11 w-11", textSize = "text-sm",}) => {
+const Avatar = ({ src, name = "User", size = "h-11 w-11", textSize = "text-lg", onClick }) => {
   const initial = name.trim().charAt(0).toUpperCase();
 
   const colorGroup = avatarColors.find((group) =>
@@ -18,6 +18,7 @@ const Avatar = ({ src, name = "User", size = "h-11 w-11", textSize = "text-sm",}
 
   return (
     <div
+    onClick={onClick}
       className={`${size} flex shrink-0 items-center justify-center overflow-hidden rounded-full ${src ? "bg-[#EEF0FF]" : `${bgColor} ${textColor}`}`}
     >
       {src ? (

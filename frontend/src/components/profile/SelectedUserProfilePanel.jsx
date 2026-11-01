@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ChevronRight,
   Mail,
@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
   Check,
   X,
+  MessageCircle,
 } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -24,7 +25,11 @@ const ProfilePanel = () => {
 
   const [showAllMedia, setShowAllMedia] = useState(false);
 
-  const media = messages.filter((message) => message.image);
+  // const media = messages.filter((message) => message.image);
+  const media = useMemo(
+    () => messages.filter((message) => message.image),
+    [messages],
+  );
 
   return (
     <aside
@@ -49,7 +54,7 @@ const ProfilePanel = () => {
             </div>
           </div>
 
-          <div className="chatify-scrollbar min-h-0 flex-1 overflow-y-auto">
+          <div className="chatuser-scrollbar min-h-0 flex-1 overflow-y-auto">
             <div className="flex flex-col items-center px-6 pb-6 pt-7">
               <UserAvatar
                 src={selectedUser?.profilePic}
@@ -88,11 +93,34 @@ const ProfilePanel = () => {
                 </span>
               </div>
 
-              <p className="mt-4 max-w-65 text-center text-[13px] leading-5 text-[#8D91A3]">
-                {selectedUser?.bio ||
-                  selectedUser?.status ||
-                  "No bio available"}
-              </p>
+              {(selectedUser?.status || selectedUser?.bio) && (
+                <div className="mt-5 w-full max-w-65 space-y-4">
+                  {selectedUser?.status && (
+                    <div className="flex items-start justify-center gap-2 rounded-xl bg-[#F8F9FE] px-3 py-2">
+                      <MessageCircle
+                        size={15}
+                        className="mt-0.5 shrink-0 text-[#7F84F7]"
+                      />
+
+                      <p className="text-[12px] leading-5 text-[#73788D]">
+                        {selectedUser.status}
+                      </p>
+                    </div>
+                  )}
+
+                  {selectedUser?.bio && (
+                    <div className="text-center">
+                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+                        About
+                      </p>
+
+                      <p className="text-[13px] text-[#8D91A3]">
+                        {selectedUser.bio}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="px-5">

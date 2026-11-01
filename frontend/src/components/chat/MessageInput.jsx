@@ -116,7 +116,7 @@ const MessageInput = () => {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             aria-label="Attach image"
-            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#9AA0B5] transition-colors hover:bg-[#EDEEFC] hover:text-[#7F84F7] active:scale-95"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#7F84F7] transition-colors bg-[#EDEEFC] hover:bg-[#dee0f3] active:scale-95"
           >
             <Image size={18} strokeWidth={2} />
           </button>
@@ -139,7 +139,7 @@ const MessageInput = () => {
             type="submit"
             aria-label="Send message"
             disabled={!text.trim() && !selectedImage}
-            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#7F84F7] text-white transition-colors hover:bg-[#7076E8] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:hidden"
+            className="flex h-9 w-13 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#7F84F7] text-white transition-colors hover:bg-[#7076E8] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:hidden"
           >
             <Send size={17} strokeWidth={2.2} />
           </button>
