@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Plus,
   Volume2,
@@ -36,6 +36,7 @@ const ChatListPanel = () => {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const isSearchActive = search.trim().length > 0;
   const isUnreadFilter = activeFilter === "Unread";
@@ -50,7 +51,24 @@ const ChatListPanel = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const unreadCount = chats.reduce((total, chat) => total + (chat.unreadCount || 0), 0,);
+  const unreadCount = chats.reduce(
+    (total, chat) => total + (chat.unreadCount || 0),
+    0,
+  );
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     getMyChats();
@@ -67,17 +85,17 @@ const ChatListPanel = () => {
   }, [socket, listenForMessages, stopListeningToMessages]);
 
   return (
-    <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
+    <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FFFFFF]">
       <div className="flex h-15 shrink-0 items-center justify-between px-5 md:h-19">
         <h2 className="text-xl font-semibold tracking-tight text-slate-800">
           Chats
         </h2>
 
-        <div className="relative">
+        <div ref={menuRef} className="relative">
           <button
             type="button"
             onClick={() => setIsMenuOpen((prev) => !prev)}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-[#7F84F7]/10 hover:text-[#7F84F7]"
+            className="flex h-9 cursor-pointer items-center justify-end rounded-xl text-slate-500 transition-colors hover:text-[#7F84F7]"
           >
             <MoreVertical size={21} strokeWidth={2.2} />
           </button>
@@ -137,7 +155,7 @@ const ChatListPanel = () => {
       <div className="chatuser-scrollbar h-full overflow-y-auto  pb-3">
         {isUsersLoading ? (
           <div className="flex flex-col gap-1">
-            {Array.from({ length: 6 }).map((_, index) => (
+            {Array.from({ length: 7 }).map((_, index) => (
               <ChatItemSkeleton key={index} />
             ))}
           </div>
@@ -159,7 +177,7 @@ const ChatListPanel = () => {
                   : "No conversations found"}
             </h3>
 
-            <p className="mt-1.5 max-w-58 text-sm leading-5 text-slate-400">
+            <p className="mt-1.5 max-w-58 text-sm text-slate-400">
               {isSearchActive
                 ? "Try searching for another name to find your conversations."
                 : isUnreadFilter

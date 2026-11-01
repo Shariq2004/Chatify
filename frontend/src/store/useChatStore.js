@@ -74,12 +74,26 @@ export const useChatStore = create((set, get) => ({
       set({ isUsersLoading: false });
     }
   },
+
   getMyChats: async () => {
     set({ isUsersLoading: true });
     try {
       const res = await axiosInstance.get("/messages/chats");
-      set({ chats: res.data });
-      console.log(res.data);
+
+      const sortedChats = [...res.data].sort((a, b) => {
+        const aUnread = Number(a.unreadCount) || 0;
+        const bUnread = Number(b.unreadCount) || 0;
+
+        if (aUnread > 0 && bUnread === 0) return -1;
+        if (aUnread === 0 && bUnread > 0) return 1;
+
+        return (
+          new Date(b.lastMessageTime || 0) - new Date(a.lastMessageTime || 0)
+        );
+      });
+
+      console.log("Chats API Response:", res.data);
+      set({ chats: sortedChats });
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
@@ -170,11 +184,7 @@ export const useChatStore = create((set, get) => ({
     socket.off("messagesRead");
 
     const handleNewMessage = (newMessage) => {
-      const {
-        selectedUser,
-        isNotificationEnabled,
-        isActiveTab,
-      } = get();
+      const { selectedUser, isNotificationEnabled, isActiveTab } = get();
 
       const currentUserId = String(useAuthStore.getState().authUser?._id);
 
@@ -230,10 +240,17 @@ export const useChatStore = create((set, get) => ({
           });
         }
 
-        updatedChats.sort(
-          (a, b) =>
-            new Date(b.lastMessageTime || 0) - new Date(a.lastMessageTime || 0),
-        );
+        updatedChats.sort((a, b) => {
+          const aUnread = Number(a.unreadCount) || 0;
+          const bUnread = Number(b.unreadCount) || 0;
+
+          if (aUnread > 0 && bUnread === 0) return -1;
+          if (aUnread === 0 && bUnread > 0) return 1;
+
+          return (
+            new Date(b.lastMessageTime || 0) - new Date(a.lastMessageTime || 0)
+          );
+        });
 
         const updatedMessages = isChatOpen
           ? state.messages.some(

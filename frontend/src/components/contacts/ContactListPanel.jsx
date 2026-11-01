@@ -20,7 +20,7 @@ const ContactListPanel = () => {
   const onlineCount = allContacts.filter((contact) => contact.isOnline).length;
 
   return (
-    <section className="flex h-full w-full shrink-0 flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
+    <section className="flex h-full w-full shrink-0 flex-col border-r border-[#E6E8F2] bg-[#FFFFFF]">
       <div className="flex h-19 shrink-0 items-center justify-between px-5">
         <div>
           <h2 className="text-xl font-semibold tracking-tight text-slate-800">
@@ -43,10 +43,10 @@ const ContactListPanel = () => {
         placeholder="Search contacts..."
       />
 
-      <div className="chatuser-scrollbar flex-1 overflow-y-auto px-2">
+      <div className="chatuser-scrollbar flex-1 overflow-y-auto px-2 pb-3">
         {isUsersLoading ? (
           <div className="flex flex-col gap-1">
-            {Array.from({ length: 6 }).map((_, index) => (
+            {Array.from({ length: 7 }).map((_, index) => (
               <ChatItemSkeleton key={index} />
             ))}
           </div>

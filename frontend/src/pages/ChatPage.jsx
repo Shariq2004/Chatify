@@ -30,7 +30,7 @@ const ChatPage = () => {
       </div>
 
       <div
-        className={`h-full min-w-0 flex-1 ${selectedUser ? "flex" : "hidden md:flex"}`}
+        className={`h-full min-h-0 min-w-0 flex-1 ${selectedUser ? "flex" : "hidden md:flex"}`}
       >
         {selectedUser ? <ChatWindow /> : <NoConversationPlaceholder />}
       </div>

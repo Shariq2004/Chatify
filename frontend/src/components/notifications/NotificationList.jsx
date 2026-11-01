@@ -56,7 +56,7 @@ const NotificationList = () => {
               No notifications yet
             </h3>
 
-            <p className="mt-2 max-w-60 text-sm leading-6 text-slate-400">
+            <p className="mt-2 max-w-60 text-sm text-slate-400">
               You're all set! New notifications will appear here when you
               receive them.
             </p>

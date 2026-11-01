@@ -17,28 +17,28 @@ const ContactItem = ({ id, name, avatar, online, selectedUser, click }) => {
          `}
     >
       <div className="relative shrink-0">
-        <UserAvatar src={avatar} name={name} size="h-13 w-13" />
+        <UserAvatar src={avatar} name={name} size="h-12 w-12 sm:h-13 sm:w-13" />
 
         <span
-          className={`absolute bottom-0.5 right-0.5 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white ${
+          className={`absolute bottom-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white ${
             isOnline ? "bg-emerald-500" : "bg-slate-400"
           }`}
         >
           {isOnline ? (
-            <Check size={7} strokeWidth={3} className="text-white" />
+            <Check size={8} strokeWidth={3} className="text-white" />
           ) : (
-            <X size={7} strokeWidth={3} className="text-white" />
+            <X size={8} strokeWidth={3} className="text-white" />
           )}
         </span>
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-slate-700 transition-colors duration-200 group-hover:text-[#6F73E8]">
+        <p className="truncate text-[15px] font-semibold text-slate-700 transition-colors duration-200 group-hover:text-[#6F73E8]">
           {name}
         </p>
 
         <p
-          className={`mt-0.5 text-xs ${
+          className={`mt-0.5 text-[13px] ${
             isOnline ? "text-emerald-500" : "text-slate-400"
           }`}
         >

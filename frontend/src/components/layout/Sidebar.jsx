@@ -208,7 +208,7 @@ const Sidebar = () => {
 
       {/* Mobile Bottom Navigation */}
       {!selectedUser && (
-        <nav className="fixed inset-x-0 bottom-0 z-50 flex h-17 items-center justify-around border-t border-[#E6E8F2] bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-md backdrop-blur-md md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-50 flex h-17 items-center justify-around border-t border-[#E6E8F2] bg-[#FFFFFF] px-2 pb-[env(safe-area-inset-bottom)] shadow-md backdrop-blur-md md:hidden">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveTab === item.label;
@@ -223,11 +223,11 @@ const Sidebar = () => {
                 className={`relative flex h-full min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl transition-colors ${
                   isActive
                     ? "text-[#6F75E8]"
-                    : "text-slate-400 hover:text-[#6F75E8]"
+                    : "text-slate-700 hover:text-[#6F75E8]"
                 }`}
               >
                 <span
-                  className={`relative flex h-8 w-13 items-center justify-center rounded-2xl transition-colors duration-200 cursor-pointer ${
+                  className={`relative flex h-8 w-13 items-center justify-center rounded-2xl transition-colors duration-200 cursor-pointer active:scale-95 ${
                     isActive ? "bg-[#F0F1FA]" : " "
                   }`}
                 >
@@ -270,7 +270,7 @@ const Sidebar = () => {
 
                 <span
                   className={`text-[10px] font-medium ${
-                    isActive ? "text-[#6F75E8]" : "text-slate-500"
+                    isActive ? "text-[#646aeb]" : "text-slate-700"
                   }`}
                 >
                   {item.label}

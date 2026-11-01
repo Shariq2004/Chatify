@@ -104,7 +104,7 @@ const ProfilePanel = () => {
   };
 
   return (
-    <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FAFBFF]">
+    <section className="flex h-full w-full flex-col border-r border-[#E6E8F2] bg-[#FFFFFF]">
       <div className="h-19 flex items-center justify-between px-5">
         <div>
           <h2 className="text-xl font-semibold tracking-[-0.01em] text-[#3F4354]">
@@ -117,7 +117,7 @@ const ProfilePanel = () => {
         </div>
       </div>
 
-      <div className="chatuser-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-6">
+      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6">
         <div className="flex flex-col items-center">
           <div className="relative h-24 w-24">
             <button
@@ -149,7 +149,7 @@ const ProfilePanel = () => {
 
             {!isEditing && (
               <span
-                className={`absolute bottom-2 right-1 inline-flex h-5 w-5 items-center justify-center rounded-full ${
+                className={`absolute bottom-2 right-1 inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-white ${
                   isOnline ? "bg-[#55C58A]" : "bg-[#9AA0B5]"
                 }`}
               >

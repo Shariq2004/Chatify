@@ -34,9 +34,9 @@ const ChatWindow = () => {
   }, [selectedUser?._id, getMessagesByUserId]);
 
   return (
-    <div className="relative flex h-full min-w-0 flex-1 overflow-hidden">
+    <div className="relative flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
       <div
-        className={`min-w-0 flex-1 flex-col ${
+        className={`min-h-0 min-w-0 flex-1 flex-col ${
           isProfileOpen ? "hidden 2xl:flex" : "flex"
         }`}
       >
