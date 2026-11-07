@@ -20,7 +20,7 @@ const ContactItem = ({ id, name, avatar, online, selectedUser, click }) => {
         <UserAvatar src={avatar} name={name} size="h-12 w-12 sm:h-13 sm:w-13" />
 
         <span
-          className={`absolute bottom-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white ${
+          className={`absolute bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white ${
             isOnline ? "bg-emerald-500" : "bg-slate-400"
           }`}
         >

@@ -40,7 +40,9 @@ const ChatWindow = () => {
           isProfileOpen ? "hidden 2xl:flex" : "flex"
         }`}
       >
-        <ChatHeader />
+        <div className="shrink-0">
+          <ChatHeader />
+        </div>
 
         {messages.length > 0 && !isMessagesLoading ? (
           <MessageList />
@@ -50,7 +52,9 @@ const ChatWindow = () => {
           <NoChatHistoryPlaceholder />
         )}
 
-        <MessageInput />
+        <div className="shrink-0">
+          <MessageInput />
+        </div>
       </div>
 
       <SelectedUserProfilePanel />

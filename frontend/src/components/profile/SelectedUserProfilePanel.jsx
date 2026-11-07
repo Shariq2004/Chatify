@@ -39,13 +39,13 @@ const ProfilePanel = () => {
         <AllMedia onBack={() => setShowAllMedia(false)} />
       ) : (
         <>
-          <div className="flex h-19 shrink-0 items-center border-b border-[#E7E9F2] px-5">
+          <div className="flex h-19 shrink-0 items-center border-b border-[#E7E9F2] px-2 md:px-3">
             <div className="flex items-center gap-3">
               <button
                 onClick={toggleProfile}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#8D91A3] transition-all duration-200 hover:bg-[#F3F4FA] hover:text-[#7F84F7] cursor-pointer"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-600 transition-all duration-200 hover:bg-[#F3F4FA] hover:text-[#7F84F7] cursor-pointer"
               >
-                <ChevronRight size={20} strokeWidth={2} />
+                <ChevronRight size={23} strokeWidth={2} />
               </button>
 
               <h2 className="text-[15px] font-semibold text-[#3F4354]">
@@ -54,7 +54,7 @@ const ProfilePanel = () => {
             </div>
           </div>
 
-          <div className="chatuser-scrollbar min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="flex flex-col items-center px-6 pb-6 pt-7">
               <UserAvatar
                 src={selectedUser?.profilePic}

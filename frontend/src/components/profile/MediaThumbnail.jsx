@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
 
-const MediaThumbnail = ({ imageUrl, rounded="rounded-[10px]" }) => {
+const MediaThumbnail = ({ imageUrl, rounded = "rounded-[10px]" }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div className={`group relative aspect-square overflow-hidden ${rounded} bg-[#F3F4FA]`}>
+    <div
+      className={`group relative aspect-square overflow-hidden ${rounded} bg-[#F3F4FA] cursor-pointer`}
+    >
       {isLoading && !hasError && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-linear-to-br from-[#F0F1FA] via-[#E8EBF6] to-[#F3F0FF]">
           <div className="absolute inset-0 animate-pulse bg-linear-to-br from-white/40 via-transparent to-[#DCDFFF]/30" />
@@ -18,19 +20,25 @@ const MediaThumbnail = ({ imageUrl, rounded="rounded-[10px]" }) => {
       )}
 
       {!hasError && (
-        <img
-          src={imageUrl}
-          alt="Shared image"
-          loading="lazy"
-          onLoad={() => setIsLoading(false)}
-          onError={() => {
-            setIsLoading(false);
-            setHasError(true);
-          }}
-          className={`h-full w-full object-cover transition-all duration-300 group-hover:scale-105 ${
-            isLoading ? "opacity-0" : "opacity-100"
-          }`}
-        />
+        <>
+          <img
+            src={imageUrl}
+            alt="Shared image"
+            loading="lazy"
+            onLoad={() => setIsLoading(false)}
+            onError={() => {
+              setIsLoading(false);
+              setHasError(true);
+            }}
+            className={`h-full w-full object-cover transition-all duration-300 group-hover:scale-105 ${
+              isLoading ? "opacity-0" : "opacity-100"
+            }`}
+          />
+
+          {!isLoading && (
+            <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
+          )}
+        </>
       )}
 
       {hasError && (
