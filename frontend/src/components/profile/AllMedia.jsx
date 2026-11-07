@@ -9,14 +9,14 @@ const AllMedia = ({ onBack }) => {
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-white">
-      <div className="flex h-19 shrink-0 items-center gap-3 border-b border-[#E7E9F2] px-5">
+      <div className="flex h-19 shrink-0 items-center gap-3 border-b border-[#E7E9F2] px-2 md:px-3">
         <button
           type="button"
           onClick={onBack}
           aria-label="Back to contact info"
-          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[#8D91A3] transition-colors duration-200 hover:bg-[#F3F4FA] hover:text-[#7F84F7]"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-600 transition-colors duration-200 hover:bg-[#F3F4FA] hover:text-[#7F84F7]"
         >
-          <ArrowLeft size={20} strokeWidth={2} />
+          <ArrowLeft size={23} strokeWidth={2} />
         </button>
 
         <div>
@@ -29,11 +29,11 @@ const AllMedia = ({ onBack }) => {
         </div>
       </div>
 
-      <div className="chatify-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
+      <div className="chatify-scrollbar min-h-0 flex-1 overflow-y-auto p-2 md:p-4">
         {media.length > 0 ? (
           <div className="grid grid-cols-3 gap-1">
             {media.reverse().map((item) => ( 
-              <MediaThumbnail key={item._id} imageUrl={item.image} rounded="rounded-none" />
+              <MediaThumbnail key={item._id} imageUrl={item.image} rounded="rounded-sm" />
             ))}
           </div>
         ) : (

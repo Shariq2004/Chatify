@@ -12,16 +12,16 @@ const ChatHeader = () => {
     : false;
 
   return (
-    <header className="flex h-16 md:h-19 shrink-0 items-center justify-between gap-2 border-b border-[#E6E8F2] bg-white px-3 md:px-6">
+    <header className="flex h-16 md:h-19 shrink-0 items-center justify-between gap-2 border-b border-[#E6E8F2] bg-white px-2 md:px-6">
       <div className="flex min-w-0 items-center gap-2 md:gap-3">
         {/* Mobile Back Button */}
         <button
           type="button"
           onClick={() => setSelectedUser(null)}
           aria-label="Back to chats"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-[#EDEEFC] hover:text-[#7F84F7] md:hidden cursor-pointer"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-[#EDEEFC] hover:text-[#7F84F7] md:hidden cursor-pointer"
         >
-          <ArrowLeft size={21} />
+          <ArrowLeft size={23} />
         </button>
 
         <div

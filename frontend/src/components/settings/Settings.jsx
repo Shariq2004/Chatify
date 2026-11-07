@@ -20,7 +20,7 @@ const Settings = () => {
         </p>
       </div>
       
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-5 sm:px-5 chatuser-scrollbar">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-5 sm:px-5">
         <div className="mx-auto w-full max-w-3xl space-y-2.5 sm:space-y-4">
           {/* Notifications */}
           <section className="overflow-hidden rounded-2xl border border-[#E6E8F2] bg-white">
