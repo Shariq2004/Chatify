@@ -1,4 +1,4 @@
-import { MoreVertical, Phone, Video, X, Check, ArrowLeft } from "lucide-react";
+import { Info , Phone, Video, X, Check, ArrowLeft } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import UserAvatar from "../common/UserAvatar";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -68,7 +68,6 @@ const ChatHeader = () => {
       <div className="flex shrink-0 items-center gap-0.5 md:gap-1.5">
         <button
           type="button"
-          aria-label="Start voice call"
           className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7F84F7] transition-colors hover:bg-[#EDEEFC] active:scale-95"
         >
           <Phone size={18} />
@@ -76,7 +75,6 @@ const ChatHeader = () => {
 
         <button
           type="button"
-          aria-label="Start video call"
           className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7F84F7] transition-colors hover:bg-[#EDEEFC] active:scale-95"
         >
           <Video size={20} />
@@ -86,10 +84,10 @@ const ChatHeader = () => {
 
         <button
           type="button"
-          aria-label="More options"
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600 active:scale-95"
+          onClick={toggleProfile}
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition-colors cursor-pointer hover:bg-slate-50 hover:text-[#7F84F7] active:scale-95"
         >
-          <MoreVertical size={19} />
+          <Info  size={18} strokeWidth={2}/>
         </button>
       </div>
     </header>

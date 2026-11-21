@@ -101,7 +101,7 @@ const ChatListPanel = () => {
           </button>
 
           {isMenuOpen && (
-            <div className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-[#E6E8F2] bg-white p-1.5 shadow-lg shadow-slate-200/50">
+            <div className="absolute right-0 top-9 z-50 w-44 overflow-hidden rounded-xl border border-[#E6E8F2] bg-white p-1.5 shadow-lg shadow-slate-200/50">
               <button
                 type="button"
                 onClick={() => {

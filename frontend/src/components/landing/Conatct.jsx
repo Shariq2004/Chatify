@@ -18,19 +18,19 @@ const Contact = () => {
       icon: Mail,
       label: "Email us",
       value: "Let's connect through email",
-      href: "mailto:hello@chatify.com",
+      href: "mailto:support@chatify.com",
     },
     {
       icon: MessageCircle,
       label: "Have a question?",
       value: "We'd love to hear from you",
-      href: "mailto:hello@chatify.com",
+      href: "mailto:support@chatify.com",
     },
     {
       icon: FaGithub,
       label: "Explore the project",
       value: "Check out Chatify on GitHub",
-      href: "https://github.com",
+      href: "https://github.com/Shariq2004/Chatify",
     },
   ];
 

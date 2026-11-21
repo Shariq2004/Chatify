@@ -51,17 +51,17 @@ const Navbar = () => {
               ))}
             </div>
 
-            <div className="hidden items-center gap-3 md:flex">
+            <div className="hidden items-center gap-2 md:flex">
               <Link
                 to="/login"
-                className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors duration-200 bg-[#EEEFFF] hover:text-[#7076E8]"
+                className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors duration-200 bg-[#EEEFFF] hover:text-[#7076E8]"
               >
                 Log in
               </Link>
 
               <Link
                 to="/signup"
-                className="rounded-xl bg-[#7F84F7] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#7F84F7]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7076E8] hover:shadow-lg active:translate-y-0"
+                className="rounded-xl bg-[#7F84F7] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#7F84F7]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7076E8] active:translate-y-0"
               >
                 Get Started
               </Link>
